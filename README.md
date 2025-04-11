@@ -1,94 +1,81 @@
-# 10x Astro Starter
+# Fiszki AI
 
-A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications.
+## Table of Contents
+- [Project Description](#project-description)
+- [Tech Stack](#tech-stack)
+- [Getting Started Locally](#getting-started-locally)
+- [Available Scripts](#available-scripts)
+- [Project Scope](#project-scope)
+- [Project Status](#project-status)
+- [License](#license)
+
+## Project Description
+Fiszki AI is a web application designed to help users quickly create high-quality educational flashcards. The application leverages AI to automatically generate flashcards from user-provided text (up to 10,000 characters) and also supports manual creation, editing, and deletion of flashcards. Additionally, the app integrates with a spaced repetition algorithm to optimize learning and includes a user authentication system (email and password) along with basic logging for key events.
 
 ## Tech Stack
+**Frontend:**
+- Astro 5 for fast, efficient web pages with minimal JavaScript
+- React 19 for interactive components
+- TypeScript 5 for static typing and enhanced IDE support
+- Tailwind CSS 4 for streamlined styling
+- Shadcn/ui for accessible React components
 
-- [Astro](https://astro.build/) v5.5.5 - Modern web framework for building fast, content-focused websites
-- [React](https://react.dev/) v19.0.0 - UI library for building interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4.0.17 - Utility-first CSS framework
+**Backend:**
+- Supabase for a comprehensive backend solution including PostgreSQL database and built-in authentication
 
-## Prerequisites
+**AI Integration:**
+- Openrouter.ai for accessing a range of AI models (OpenAI, Anthropic, Google, etc.) to power flashcard generation
 
-- Node.js v22.14.0 (as specified in `.nvmrc`)
-- npm (comes with Node.js)
+**CI/CD and Hosting:**
+- GitHub Actions for CI/CD pipelines
+- DigitalOcean with Docker for hosting
 
-## Getting Started
+## Getting Started Locally
+1. **Prerequisites:**
+   - Install [Node.js](https://nodejs.org/) (version as specified in `.nvmrc`: **22.14.0**).
+   - Ensure you have npm installed.
 
-1. Clone the repository:
+2. **Clone the Repository:**
+   ```bash
+   git clone <repository-url>
+   cd 10xDevsProject
+   ```
 
-```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
-```
+3. **Install Dependencies:**
+   ```bash
+   npm install
+   ```
 
-2. Install dependencies:
+4. **Run the Development Server:**
+   ```bash
+   npm run dev
+   ```
 
-```bash
-npm install
-```
-
-3. Run the development server:
-
-```bash
-npm run dev
-```
-
-4. Build for production:
-
-```bash
-npm run build
-```
+5. **Additional Configuration:**
+   - Set up any necessary environment variables for API keys (e.g., for Openrouter.ai and Supabase).
 
 ## Available Scripts
+From the `package.json`, the following scripts are available:
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
+- **dev:** Starts the Astro development server (`astro dev`).
+- **build:** Builds the project for production (`astro build`).
+- **preview:** Serves the production build locally (`astro preview`).
+- **astro:** Directly invoke Astro CLI commands.
+- **lint:** Runs ESLint to check for code issues (`eslint .`).
+- **lint:fix:** Runs ESLint with the fix option (`eslint . --fix`).
+- **format:** Formats the code using Prettier (`prettier --write .`).
 
-## Project Structure
+## Project Scope
+The project focuses on delivering an efficient educational tool with the following core functionalities:
+- **Flashcard Generation:** Automatically generate flashcards using AI from user-provided text.
+- **Manual Flashcard Creation:** Allow users to create flashcards by manually entering the content for the front and back.
+- **Flashcard Management:** Enable users to view, edit, and delete flashcards.
+- **User Authentication:** Simple registration and login using email and password.
+- **Integration with Spaced Repetition:** Accepted flashcards are integrated into an external spaced repetition algorithm.
+- **Event Logging:** Log key events (e.g., flashcard generation, acceptance, rejection) along with basic metadata.
 
-```md
-.
-├── src/
-│   ├── layouts/    # Astro layouts
-│   ├── pages/      # Astro pages
-│   │   └── api/    # API endpoints
-│   ├── components/ # UI components (Astro & React)
-│   └── assets/     # Static assets
-├── public/         # Public assets
-```
-
-## AI Development Support
-
-This project is configured with AI development tools to enhance the development experience, providing guidelines for:
-
-- Project structure
-- Coding practices
-- Frontend development
-- Styling with Tailwind
-- Accessibility best practices
-- Astro and React guidelines
-
-### Cursor IDE
-
-The project includes AI rules in `.cursor/rules/` directory that help Cursor IDE understand the project structure and provide better code suggestions.
-
-### GitHub Copilot
-
-AI instructions for GitHub Copilot are available in `.github/copilot-instructions.md`
-
-### Windsurf
-
-The `.windsurfrules` file contains AI configuration for Windsurf.
-
-## Contributing
-
-Please follow the AI guidelines and coding practices defined in the AI configuration files when contributing to this project.
+## Project Status
+This project is currently in active development. 
 
 ## License
-
-MIT
+This project is licensed under the MIT License. 
