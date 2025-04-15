@@ -56,7 +56,7 @@ export type FlashcardProposalDTO = {
 //Represents the response from the generation create endpoint
 export interface GenerationCreateResponseDto {
     generation_id: number;
-    flashcardsProposal: FlashcardProposalDTO[];
+    flashcards_proposal: FlashcardProposalDTO[];
     generated_count: number;
 }
 
