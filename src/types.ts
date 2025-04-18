@@ -49,7 +49,8 @@ export type GenerateFlashcardsCommand = {
 export type FlashcardProposalDTO = {
     front: string;
     back: string;
-    type: "ai"
+    type: "ai";
+    status?: 'accepted' | 'edited';
 }
 
 //Generation create reponse dto

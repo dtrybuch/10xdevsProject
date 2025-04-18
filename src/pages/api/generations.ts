@@ -5,6 +5,8 @@ import { supabaseClient, DEFAULT_USER_ID } from '../../db/supabase.client';
 import { GenerationService } from '../../services/GenerationService';
 import { config } from '../../config/env';
 
+export const prerender = false;
+
 // Input validation schema
 const generateFlashcardsSchema = z.object({
   text: z.string()
@@ -18,7 +20,7 @@ const generationService = new GenerationService(
   config.aiService.apiKey
 );
 
-export const post: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request }) => {
   try {
     const sessionStart = Date.now();
 

@@ -4,9 +4,6 @@
 -- Author: AI Assistant
 -- Date: 2024-03-19
 
--- Enable Row Level Security
-alter database postgres set "auth.require_role" to 'authenticated';
-
 -- Step 1: Create functions (before they are needed by triggers)
 create or replace function update_updated_at_column()
 returns trigger as $$

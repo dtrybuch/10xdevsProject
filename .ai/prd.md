@@ -9,8 +9,8 @@ Użytkownicy potrzebują efektywnego sposobu nauki, jednak manualne tworzenie fi
 
 ## 3. Wymagania funkcjonalne
 1. Generowanie fiszek przez AI:
-   - Użytkownik może wkleić tekst o maksymalnej długości 10 000 znaków.
-   - Apliakcja wysyła tekst do modelu LLM za pośrednictwem API.
+   - Użytkownik może wkleić tekst o maksymalnej długości od 1000 do 10 000 znaków.
+   - Aplikacja wysyła tekst do modelu LLM za pośrednictwem API.
    - AI generuje kandydatów na fiszki na podstawie wprowadzonego tekstu.
    - Użytkownik ma możliwość akceptacji, edycji lub odrzucenia wygenerowanych fiszek.
 

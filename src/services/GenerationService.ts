@@ -35,17 +35,21 @@ export class GenerationService {
 
       const generation_id = Date.now();
 
-      // Record the generation in the database
-      await supabaseClient
+      // Create initial session record
+      const { error: insertError } = await supabaseClient
         .from('generation_sessions')
         .insert({
           user_id: DEFAULT_USER_ID,
-          created_at: new Date().toISOString(),
-          session_duration: 0, // Initial duration, will be updated later
+          session_duration: 'PT0S',  // Initial duration as ISO 8601
           accepted_count: 0,
           edited_count: 0,
           rejected_count: 0
         });
+
+      if (insertError) {
+        console.error('Error creating generation session:', insertError);
+        throw new Error('Failed to create generation session');
+      }
 
       return {
         generation_id,
@@ -71,10 +75,13 @@ export class GenerationService {
     rejectedCount: number = 0
   ): Promise<void> {
     try {
-      await supabaseClient
+      // Convert seconds to ISO 8601 duration format
+      const duration = `PT${sessionDuration}S`;
+      
+      const { error: updateError } = await supabaseClient
         .from('generation_sessions')
         .update({
-          session_duration: sessionDuration,
+          session_duration: duration,
           accepted_count: acceptedCount,
           edited_count: editedCount,
           rejected_count: rejectedCount,
@@ -82,6 +89,11 @@ export class GenerationService {
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
         .limit(1);
+
+      if (updateError) {
+        console.error('Error updating generation session:', updateError);
+        throw new Error('Failed to update generation session');
+      }
     } catch (error) {
       console.error('Error recording generation session:', error);
       throw new Error('Failed to record generation session');
