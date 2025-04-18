@@ -1,13 +1,26 @@
 import type { FlashcardProposalDTO, GenerationCreateResponseDto } from '../types';
 import { supabaseClient, DEFAULT_USER_ID } from '../db/supabase.client';
+import { OpenRouterService } from '../lib/openrouter.service';
 
 export class GenerationService {
-  private readonly aiServiceUrl: string;
-  private readonly aiServiceApiKey: string;
+  private readonly openRouterService: OpenRouterService;
 
-  constructor(aiServiceUrl: string, aiServiceApiKey: string) {
-    this.aiServiceUrl = aiServiceUrl;
-    this.aiServiceApiKey = aiServiceApiKey;
+  constructor() {
+    if (!import.meta.env.OPENROUTER_API_KEY) {
+      throw new Error('OpenRouter API key is not configured. Please set OPENROUTER_API_KEY in your .env file.');
+    }
+
+    this.openRouterService = new OpenRouterService({
+      apiKey: import.meta.env.OPENROUTER_API_KEY,
+      modelName: 'openai/gpt-4o-mini',
+      modelParameters: {
+        temperature: 0.7,
+        max_tokens: 1000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      }
+    });
   }
 
   /**
@@ -18,20 +31,36 @@ export class GenerationService {
    */
   async generateFlashcards(text: string): Promise<GenerationCreateResponseDto> {
     try {
-      // TODO: Implement actual AI service integration
-      // For now, return mock data for development
-      const mockProposals: FlashcardProposalDTO[] = [
-        {
-          front: "What is the capital of France?",
-          back: "Paris",
-          type: "ai"
-        },
-        {
-          front: "What is the largest planet in our solar system?",
-          back: "Jupiter",
-          type: "ai"
-        }
-      ];
+      const systemPrompt = `You are a flashcard generation assistant. Your task is to create educational flashcards from the provided text.
+Each flashcard should have a question on the front and an answer on the back. Follow these rules:
+1. Create concise, focused questions that test understanding
+2. Ensure answers are clear and accurate
+3. Cover key concepts and important details
+4. Avoid overly complex or compound questions
+5. Make questions specific and unambiguous
+
+You MUST respond with a JSON object in this exact format:
+{
+  "answer": [
+    {
+      "front": "question text here",
+      "back": "answer text here"
+    }
+    // ... more flashcards
+  ],
+  "confidence": 0.9  // number between 0 and 1 indicating confidence in the generated flashcards
+}`;
+
+      const userPrompt = `Please create flashcards from the following text:\n\n${text}`;
+
+      const aiResponse = await this.openRouterService.sendChatMessage(systemPrompt, userPrompt);
+      
+      // Convert the AI response directly to FlashcardProposalDTO array
+      const flashcardsProposal: FlashcardProposalDTO[] = aiResponse.answer.map(card => ({
+        front: card.front,
+        back: card.back,
+        type: 'ai'
+      }));
 
       const generation_id = Date.now();
 
@@ -53,8 +82,8 @@ export class GenerationService {
 
       return {
         generation_id,
-        flashcards_proposal: mockProposals,
-        generated_count: mockProposals.length
+        flashcards_proposal: flashcardsProposal,
+        generated_count: flashcardsProposal.length
       };
     } catch (error) {
       console.error('Error generating flashcards:', error);
