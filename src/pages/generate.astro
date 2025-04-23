@@ -1,5 +1,5 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import MainLayout from '../layouts/MainLayout.astro';
 import { GenerateFlashcardsView } from "@/components/GenerateFlashcardsView";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -7,8 +7,8 @@ import { Toaster } from "@/components/ui/sonner";
 export const prerender = false;
 ---
 
-<Layout title="Generate Flashcards">
-  <main class="container mx-auto px-4 py-8">
+<MainLayout title="Generate Flashcards">
+  <div class="container mx-auto px-4 py-8">
     <div class="max-w-4xl mx-auto">
       <h1 class="text-3xl font-bold mb-6">Generate Flashcards</h1>
       <p class="text-muted-foreground mb-8">
@@ -17,6 +17,6 @@ export const prerender = false;
       
       <GenerateFlashcardsView client:load />
     </div>
-  </main>
+  </div>
   <Toaster client:load />
-</Layout> 
+</MainLayout> 

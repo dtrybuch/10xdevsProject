@@ -1,0 +1,38 @@
+---
+import Layout from "./Layout.astro";
+import { LogoutButton } from "../components/auth/LogoutButton";
+import { cn } from "@/lib/utils";
+
+interface Props {
+  title?: string;
+  class?: string;
+}
+
+const { title, class: className } = Astro.props;
+const { user } = Astro.locals;
+---
+
+<Layout title={title}>
+  <div class="min-h-screen flex flex-col">
+    <header class="border-b">
+      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="/generate" class="text-xl font-semibold">
+          Fiszki AI
+        </a>
+        <div class="flex items-center gap-4">
+          {user && (
+            <div class="flex items-center gap-4">
+              <span class="text-sm text-muted-foreground">
+                {user.email}
+              </span>
+              <LogoutButton client:load />
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+    <main class={cn("flex-1", className)}>
+      <slot />
+    </main>
+  </div>
+</Layout> 
