@@ -1,0 +1,11 @@
+---
+import NonAuthLayout from "../layouts/NonAuthLayout.astro";
+import RegisterForm from "../components/auth/RegisterForm";
+---
+
+<NonAuthLayout
+  title="Create an account"
+  description="Sign up for a new account to get started."
+>
+  <RegisterForm client:load />
+</NonAuthLayout> 

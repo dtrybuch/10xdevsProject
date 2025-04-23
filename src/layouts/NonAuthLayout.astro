@@ -1,0 +1,30 @@
+---
+import Layout from "./Layout.astro";
+import { cn } from "@/lib/utils";
+
+interface Props {
+  title?: string;
+  description?: string;
+  class?: string;
+}
+
+const { 
+  title = "Authentication", 
+  description = "Sign in to your account",
+  class: className
+} = Astro.props;
+---
+
+<Layout title={title}>
+  <main class={cn("flex min-h-screen flex-col items-center justify-center p-4 md:p-8", className)}>
+    <div class="w-full max-w-md space-y-6">
+      <div class="space-y-2 text-center">
+        <h1 class="text-2xl font-bold tracking-tight">{title}</h1>
+        {description && <p class="text-muted-foreground text-sm">{description}</p>}
+      </div>
+      <div class="w-full">
+        <slot />
+      </div>
+    </div>
+  </main>
+</Layout> 

@@ -1,0 +1,11 @@
+---
+import NonAuthLayout from "../layouts/NonAuthLayout.astro";
+import LoginForm from "../components/auth/LoginForm";
+---
+
+<NonAuthLayout
+  title="Sign in"
+  description="Welcome back! Sign in to your account to continue."
+>
+  <LoginForm client:load />
+</NonAuthLayout> 
