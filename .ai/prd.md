@@ -62,14 +62,27 @@ Kryteria akceptacji:
 - Walidacja danych wejściowych musi zapobiegać rejestracji niepoprawnych kont.
 - Dane logowania przechowywane w bezpieczny sposób.
 
-US-002  
+US-002
+- Tytuł: Bezpieczny dostęp
+- Opis: Jako użytkownik chcę mieć możliwość rejestracji i logowania się do systemu w sposób zapewniający bezpieczeństwo moich danych.
+- Kryteria akceptacji:
+  - Logowanie i rejestracja odbywają się na dedykowanych stronach.
+  - Logowanie wymaga podania adresu email i hasła.
+  - Rejestracja wymaga podania adresu email, hasła i potwierdzenia hasła.
+  - Użytkownik NIE MOŻE korzystać z funkcji aplikacji bez logowania się do systemu.
+  - Użytkownik może logować się do systemu poprzez przycisk w prawym górnym rogu.
+  - Użytkownik może się wylogować z systemu poprzez przycisk w prawym górnym rogu w głównym @Layout.astro.
+  - Nie korzystamy z zewnętrznych serwisów logowania (np. Google, GitHub).
+  - Odzyskiwanie hasła powinno być możliwe.
+
+US-003 
 Tytuł: Wklejanie tekstu do generowania fiszek  
 Opis: Jako użytkownik chcę móc wkleić tekst (do 10 000 znaków) do aplikacji, aby AI mogło wygenerować na jego podstawie fiszki.  
 Kryteria akceptacji:
 - Tekst wprowadzony przez użytkownika musi być walidowany pod kątem długości (maksymalnie 10 000 znaków).
 - Po wklejeniu tekstu użytkownik ma możliwość uruchomienia procesu generowania fiszek przez AI.
 
-US-003  
+US-004
 Tytuł: Generowanie fiszek przez AI  
 Opis: Jako użytkownik chcę, aby system generował kandydatów na fiszki na podstawie wprowadzonego tekstu, abym mógł zaoszczędzić czas na tworzenie materiałów edukacyjnych.  
 Kryteria akceptacji:
@@ -77,7 +90,7 @@ Kryteria akceptacji:
 - Każda wygenerowana fiszka powinna zawierać podstawowe informacje (np. przód i sugerowany tył).
 - Użytkownik otrzymuje informację, gdy lista fiszek jest gotowa do przeglądu.
 
-US-004  
+US-005 
 Tytuł: Akceptacja, edycja lub odrzucenie fiszek wygenerowanych przez AI  
 Opis: Jako użytkownik chcę móc akceptować, edytować lub odrzucać fiszki wygenerowane przez AI, aby tylko te trafne były zapisane w mojej bazie.  
 Kryteria akceptacji:
@@ -85,7 +98,7 @@ Kryteria akceptacji:
 - Przy każdej fiszce dostępne są opcje: akceptacji, edycji lub odrzucenia.
 - Po akceptacji fiszka zostaje zapisana w bazie danych i przekazana do algorytmu powtórek.
 
-US-005  
+US-006  
 Tytuł: Manualne tworzenie fiszek  
 Opis: Jako użytkownik chcę móc samodzielnie tworzyć fiszki, wpisując treść pytania i odpowiedzi, co umożliwia uzupełnienie brakujących materiałów lub modyfikację istniejących.  
 Kryteria akceptacji:
@@ -93,7 +106,7 @@ Kryteria akceptacji:
 - Utworzone fiszki są zapisywane w bazie danych przypisanej do konta użytkownika.
 - Ekran edycji pozwala na późniejszą modyfikację manualnie utworzonych fiszek.
 
-US-006  
+US-007 
 Tytuł: Przeglądanie, edycja i usuwanie fiszek  
 Opis: Jako użytkownik chcę móc przeglądać wszystkie moje fiszki, a także edytować lub usuwać te, które są nieaktualne lub niepotrzebne.  
 Kryteria akceptacji:
@@ -101,7 +114,7 @@ Kryteria akceptacji:
 - Dla każdej fiszki dostępne są opcje edycji i usunięcia.
 - Po edycji lub usunięciu zmiany są odzwierciedlane w bazie danych.
 
-US-007  
+US-008  
 Tytuł: Sesja nauki z algorytmem powtórek  
 Opis: Jako użytkownik chcę, aby zaakceptowane fiszki były automatycznie integrowane z zewnętrznym algorytmem powtórek, abym mógł korzystać z metod spaced repetition.  
 Kryteria akceptacji:
@@ -111,7 +124,7 @@ Kryteria akceptacji:
 - Następnie algorytm pokazuje kolejną fiszkę w ramach sesji nauki.
 - Ewentualne błędy integracji są logowane w systemie.
 
-US-008  
+US-009 
 Tytuł: Walidacja i logowanie zdarzeń  
 Opis: Jako administrator systemu chcę, aby generowane akcje (takie jak generowanie, akceptacja czy odrzucenie fiszek) były logowane wraz z podstawowymi informacjami, aby móc monitorować działanie aplikacji.  
 Kryteria akceptacji:
