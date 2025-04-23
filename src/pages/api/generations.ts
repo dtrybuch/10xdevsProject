@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { z } from 'zod';
 import type { GenerateFlashcardsCommand, GenerationCreateResponseDto } from '../../types';
 import { supabaseClient, DEFAULT_USER_ID } from '../../db/supabase.client';
-import { GenerationService } from '../../services/GenerationService';
+import { GenerationService } from '../../services/generation.service';
 import { config } from '../../config/env';
 
 export const prerender = false;
@@ -15,10 +15,7 @@ const generateFlashcardsSchema = z.object({
 });
 
 // Initialize the generation service
-const generationService = new GenerationService(
-  config.aiService.url,
-  config.aiService.apiKey
-);
+const generationService = new GenerationService();
 
 export const POST: APIRoute = async ({ request }) => {
   try {

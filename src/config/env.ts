@@ -5,8 +5,8 @@
 export const config = {
   // AI Service Configuration
   aiService: {
-    url: import.meta.env.AI_SERVICE_URL || 'https://api.openrouter.ai/api/v1/chat',
-    apiKey: import.meta.env.AI_SERVICE_API_KEY || '',
+    url: 'https://openrouter.ai/api/v1/',
+    apiKey: import.meta.env.OPENROUTER_API_KEY || '',
   },
   
   // Supabase Configuration
