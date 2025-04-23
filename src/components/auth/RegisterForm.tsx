@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import FormInput from "../ui/form-input";
 import { UserPlus } from "lucide-react";
+import { useNavigate } from "@/components/hooks/useNavigate";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -10,9 +11,14 @@ export default function RegisterForm() {
     confirmPassword: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrors({});
+
     // Form validation
     const newErrors: Record<string, string> = {};
     
@@ -24,8 +30,8 @@ export default function RegisterForm() {
     
     if (!formData.password) {
       newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters long";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters long";
     }
 
     if (!formData.confirmPassword) {
@@ -34,10 +40,39 @@ export default function RegisterForm() {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
-    setErrors(newErrors);
-    
-    if (Object.keys(newErrors).length === 0) {
-      // Handle registration logic here (will be implemented later)
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrors({
+          submit: data.error || 'Registration failed. Please try again.',
+        });
+        return;
+      }
+
+      // Registration successful - user is automatically logged in
+      // Redirect to generate
+      navigate('/generate');
+    } catch (error) {
+      setErrors({
+        submit: 'An unexpected error occurred. Please try again.',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -47,10 +82,24 @@ export default function RegisterForm() {
       ...prev,
       [name]: value
     }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {errors.submit && (
+        <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
+          {errors.submit}
+        </div>
+      )}
+
       <FormInput
         label="Email"
         type="email"
@@ -60,6 +109,7 @@ export default function RegisterForm() {
         onChange={handleChange}
         error={errors.email}
         autoComplete="email"
+        disabled={isLoading}
       />
       
       <FormInput
@@ -71,6 +121,7 @@ export default function RegisterForm() {
         onChange={handleChange}
         error={errors.password}
         autoComplete="new-password"
+        disabled={isLoading}
       />
 
       <FormInput
@@ -82,15 +133,16 @@ export default function RegisterForm() {
         onChange={handleChange}
         error={errors.confirmPassword}
         autoComplete="new-password"
+        disabled={isLoading}
       />
 
-      <Button type="submit" className="w-full" size="lg">
+      <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
         <UserPlus className="mr-2 h-4 w-4" />
-        Create account
+        {isLoading ? 'Creating account...' : 'Create account'}
       </Button>
 
       <div className="text-center">
-        <Button variant="link" asChild>
+        <Button variant="link" asChild disabled={isLoading}>
           <a href="/login">
             Already have an account? Sign in
           </a>
