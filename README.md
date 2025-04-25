@@ -30,6 +30,10 @@ Fiszki AI is a web application designed to help users quickly create high-qualit
 - GitHub Actions for CI/CD pipelines
 - DigitalOcean with Docker for hosting
 
+**Testing:**
+- **Unit & Integration Tests:** Vitest for unit testing, Testing Library for React components, and MSW for API mocking.
+- **End-to-End Tests:** Playwright (preferowany) with Cypress as an alternative.
+
 ## Getting Started Locally
 1. **Prerequisites:**
    - Install [Node.js](https://nodejs.org/) (version as specified in `.nvmrc`: **22.14.0**).
