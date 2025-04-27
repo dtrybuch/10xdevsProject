@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export function SkeletonLoader() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid="skeleton-loader">
       {[1, 2, 3].map((i) => (
         <Card key={i}>
           <CardHeader>
