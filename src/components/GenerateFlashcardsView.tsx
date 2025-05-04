@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { AlertMessage } from './AlertMessage';
-import { TextInputArea } from './TextInputArea';
-import { GenerateButton } from './GenerateButton';
-import { SkeletonLoader } from './SkeletonLoader';
-import { FlashcardProposalList } from './FlashcardProposalList';
-import { BulkSaveButton } from './BulkSaveButton';
+import { useState } from "react";
+import { AlertMessage } from "./AlertMessage";
+import { TextInputArea } from "./TextInputArea";
+import { GenerateButton } from "./GenerateButton";
+import { SkeletonLoader } from "./SkeletonLoader";
+import { FlashcardProposalList } from "./FlashcardProposalList";
+import { BulkSaveButton } from "./BulkSaveButton";
 import { toast } from "sonner";
-import type { GenerationCreateResponseDto, FlashcardProposalDTO } from '@/types';
+import type { GenerationCreateResponseDto, FlashcardProposalDTO } from "@/types";
 
 interface GenerateViewState {
   inputText: string;
@@ -27,25 +27,25 @@ const TIMEOUT_MS = 60000; // 60 seconds
 
 export function GenerateFlashcardsView() {
   const [state, setState] = useState<GenerateViewState>({
-    inputText: '',
+    inputText: "",
     isLoading: false,
     error: null,
     proposals: [],
-    stats: null
+    stats: null,
   });
 
   const handleGenerateFlashcards = async () => {
     try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }));
-      
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-      const response = await fetch('/api/generations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/generations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: state.inputText }),
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
@@ -56,46 +56,46 @@ export function GenerateFlashcardsView() {
       }
 
       const data: GenerationCreateResponseDto = await response.json();
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isLoading: false,
-        proposals: data.flashcards_proposal
+        proposals: data.flashcards_proposal,
       }));
 
       toast.success(`Generated ${data.generated_count} flashcard proposals`);
-
     } catch (error: unknown) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isLoading: false,
         error: {
-          message: error instanceof Error 
-            ? error.message 
-            : error instanceof DOMException && error.name === 'AbortError'
-            ? 'Request timed out after 60 seconds'
-            : 'An unexpected error occurred'
-        }
+          message:
+            error instanceof Error
+              ? error.message
+              : error instanceof DOMException && error.name === "AbortError"
+                ? "Request timed out after 60 seconds"
+                : "An unexpected error occurred",
+        },
       }));
     }
   };
 
-  const handleStatsChange = (stats: GenerateViewState['stats']) => {
-    setState(prev => ({ ...prev, stats }));
+  const handleStatsChange = (stats: GenerateViewState["stats"]) => {
+    setState((prev) => ({ ...prev, stats }));
   };
 
   const handleSaveComplete = () => {
-    setState(prev => ({ ...prev, proposals: [] }));
-    toast.success('All flashcards have been saved successfully');
+    setState((prev) => ({ ...prev, proposals: [] }));
+    toast.success("All flashcards have been saved successfully");
   };
 
   return (
     <div className="space-y-6" data-test-id="flashcards-generator-view">
-      <TextInputArea 
+      <TextInputArea
         value={state.inputText}
-        onChange={(text: string) => setState(prev => ({ ...prev, inputText: text }))}
+        onChange={(text: string) => setState((prev) => ({ ...prev, inputText: text }))}
         data-test-id="input-text-area"
       />
-      
+
       <GenerateButton
         onClick={handleGenerateFlashcards}
         disabled={state.inputText.length < 1000 || state.inputText.length > 10000}
@@ -105,23 +105,17 @@ export function GenerateFlashcardsView() {
 
       {state.isLoading && <SkeletonLoader data-test-id="loading-indicator" />}
 
-      {state.error && (
-        <AlertMessage
-          message={state.error.message}
-          type="error"
-          data-test-id="error-message"
-        />
-      )}
+      {state.error && <AlertMessage message={state.error.message} type="error" data-test-id="error-message" />}
 
       {state.proposals.length > 0 && (
         <>
-          <FlashcardProposalList 
+          <FlashcardProposalList
             proposals={state.proposals}
-            onProposalsChange={(proposals) => setState(prev => ({ ...prev, proposals }))}
+            onProposalsChange={(proposals) => setState((prev) => ({ ...prev, proposals }))}
             onStatsChange={handleStatsChange}
             data-test-id="flashcard-proposal-list"
           />
-          <BulkSaveButton 
+          <BulkSaveButton
             selectedProposals={state.proposals}
             onSaveComplete={handleSaveComplete}
             data-test-id="save-flashcards-button"
@@ -130,4 +124,4 @@ export function GenerateFlashcardsView() {
       )}
     </div>
   );
-} 
+}

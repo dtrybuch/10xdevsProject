@@ -7,12 +7,7 @@ interface GenerationStatsProps {
   sessionDuration: string;
 }
 
-export function GenerationStats({ 
-  acceptedCount,
-  editedCount,
-  rejectedCount,
-  sessionDuration
-}: GenerationStatsProps) {
+export function GenerationStats({ acceptedCount, editedCount, rejectedCount, sessionDuration }: GenerationStatsProps) {
   return (
     <Card className="w-full">
       <CardHeader>
@@ -44,8 +39,8 @@ export function GenerationStats({
 
 function formatDuration(isoDuration: string): string {
   const matches = isoDuration.match(/PT(\d+)H(\d+)M(\d+)S/);
-  if (!matches) return '00:00:00';
-  
+  if (!matches) return "00:00:00";
+
   const [, hours, minutes, seconds] = matches;
-  return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
-} 
+  return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}:${seconds.padStart(2, "0")}`;
+}

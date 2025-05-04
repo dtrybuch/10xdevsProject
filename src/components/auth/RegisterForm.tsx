@@ -21,13 +21,13 @@ export default function RegisterForm() {
 
     // Form validation
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
     }
-    
+
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
@@ -47,10 +47,10 @@ export default function RegisterForm() {
     }
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
@@ -59,17 +59,17 @@ export default function RegisterForm() {
 
       if (!response.ok) {
         setErrors({
-          submit: data.error || 'Registration failed. Please try again.',
+          submit: data.error || "Registration failed. Please try again.",
         });
         return;
       }
 
       // Registration successful - user is automatically logged in
       // Redirect to generate
-      navigate('/generate');
+      navigate("/generate");
     } catch (error) {
       setErrors({
-        submit: 'An unexpected error occurred. Please try again.',
+        submit: "An unexpected error occurred. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -78,13 +78,13 @@ export default function RegisterForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => {
+      setErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[name];
         return newErrors;
@@ -95,9 +95,7 @@ export default function RegisterForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {errors.submit && (
-        <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
-          {errors.submit}
-        </div>
+        <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">{errors.submit}</div>
       )}
 
       <FormInput
@@ -111,7 +109,7 @@ export default function RegisterForm() {
         autoComplete="email"
         disabled={isLoading}
       />
-      
+
       <FormInput
         label="Password"
         type="password"
@@ -138,16 +136,14 @@ export default function RegisterForm() {
 
       <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
         <UserPlus className="mr-2 h-4 w-4" />
-        {isLoading ? 'Creating account...' : 'Create account'}
+        {isLoading ? "Creating account..." : "Create account"}
       </Button>
 
       <div className="text-center">
         <Button variant="link" asChild disabled={isLoading}>
-          <a href="/login">
-            Already have an account? Sign in
-          </a>
+          <a href="/login">Already have an account? Sign in</a>
         </Button>
       </div>
     </form>
   );
-} 
+}

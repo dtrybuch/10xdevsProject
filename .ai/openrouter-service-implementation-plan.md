@@ -1,50 +1,54 @@
 # Przewodnik implementacji usługi OpenRouter
 
 ## 1. Opis usługi
+
 Usługa OpenRouter integruje się z interfejsem API OpenRouter w celu uzupełnienia czatów opartych na LLM. Umożliwia przetwarzanie komunikatów systemowych i użytkownika, formatuje odpowiedzi według precyzyjnie zdefiniowanego schematu JSON oraz zarządza parametrami modelu podczas komunikacji z API.
 
 ## 2. Opis konstruktora
+
 Konstruktor usługi inicjalizuje konfigurację parametrów modelu, kluczy API i ustawień sieciowych oraz kluczowe moduły: moduł klienta API, preprocesor wiadomości oraz moduł obsługi błędów.
 
 ### 2.1. Kluczowe komponenty usługi OpenRouter
+
 1. Komponent przetwarzania komunikatów systemowych
    - Funkcjonalność: Normalizacja i przygotowanie wiadomości systemowych (np. inicjalizacja komunikacji).
    - Wyzwania:
-     1) Utrzymanie spójności formatu komunikatów.
-     2) Obsługa różnorodności treści systemowych.
+     1. Utrzymanie spójności formatu komunikatów.
+     2. Obsługa różnorodności treści systemowych.
    - Rozwiązania:
-     1) Wprowadzenie standardowego szablonu komunikatów.
-     2) Walidacja i sanitizacja danych wejściowych.
+     1. Wprowadzenie standardowego szablonu komunikatów.
+     2. Walidacja i sanitizacja danych wejściowych.
 2. Komponent przetwarzania komunikatów użytkownika
    - Funkcjonalność: Odbiór i wstępna obróbka wiadomości użytkownika.
    - Wyzwania:
-     1) Walidacja i sanitizacja danych wejściowych.
-     2) Zapewnienie bezpieczeństwa przed atakami injection.
+     1. Walidacja i sanitizacja danych wejściowych.
+     2. Zapewnienie bezpieczeństwa przed atakami injection.
    - Rozwiązania:
-     1) Implementacja mechanizmów walidacji oraz sanitizacji danych.
-     2) Użycie zabezpieczeń na poziomie aplikacji.
+     1. Implementacja mechanizmów walidacji oraz sanitizacji danych.
+     2. Użycie zabezpieczeń na poziomie aplikacji.
 3. Moduł obsługi formatu odpowiedzi (`response_format` handler)
    - Funkcjonalność: Weryfikacja poprawności struktury odpowiedzi zgodnie z predefiniowanym schematem JSON.
    - Wyzwania:
-     1) Niespójność struktury danych zwracanych przez API.
+     1. Niespójność struktury danych zwracanych przez API.
    - Rozwiązania:
-     1) Zastosowanie walidatora schematu JSON (np. przy użyciu biblioteki do walidacji schematów).
+     1. Zastosowanie walidatora schematu JSON (np. przy użyciu biblioteki do walidacji schematów).
 4. Komponent zarządzania parametrami modelu i komunikacją z API
    - Funkcjonalność: Ustawienie nazwy modelu oraz parametrów (np. temperatura, max_tokens) oraz realizacja komunikacji z API.
    - Wyzwania:
-     1) Synchronizacja dynamicznych parametrów z wymaganiami API.
-     2) Radzenie sobie z timeoutami i błędami połączenia.
+     1. Synchronizacja dynamicznych parametrów z wymaganiami API.
+     2. Radzenie sobie z timeoutami i błędami połączenia.
    - Rozwiązania:
-     1) Dynamiczna konfiguracja parametrów z mechanizmami fallback.
-     2) Implementacja retry z exponential backoff.
+     1. Dynamiczna konfiguracja parametrów z mechanizmami fallback.
+     2. Implementacja retry z exponential backoff.
 5. Komponent zarządzania błędami i logowaniem
    - Funkcjonalność: Monitorowanie, rejestrowanie błędów oraz eskalacja problemów.
    - Wyzwania:
-     1) Efektywna diagnoza problemów bez ujawniania danych wrażliwych.
+     1. Efektywna diagnoza problemów bez ujawniania danych wrażliwych.
    - Rozwiązania:
-     1) Centralizacja logów oraz ograniczenie logowania danych wrażliwych.
+     1. Centralizacja logów oraz ograniczenie logowania danych wrażliwych.
 
 ## 3. Publiczne metody i pola
+
 1. `sendChatMessage(systemMessage: string, userMessage: string): Promise<Response>`
    - Wysyła zapytanie do OpenRouter API, przekazując komunikaty systemowe i użytkownika oraz zwraca ustrukturyzowaną odpowiedź.
 2. `setModelParameters(params: ModelParams): void`
@@ -58,11 +62,12 @@ Konstruktor usługi inicjalizuje konfigurację parametrów modelu, kluczy API i 
    - `modelParameters`: Parametry modelu.
 
 ## 4. Prywatne metody i pola
+
 1. `#preparePayload(systemMessage: string, userMessage: string): object`
    - Prywatna metoda przygotowująca ładunek żądania, integrująca i formatująca komunikaty systemowe i użytkownika.
-   **Przykłady:**
-   a. Komunikat systemowy: "SYSTEM: Inicjalizacja komunikacji."
-   b. Komunikat użytkownika: "USER: Proszę o wyjaśnienie funkcji usługi."
+     **Przykłady:**
+     a. Komunikat systemowy: "SYSTEM: Inicjalizacja komunikacji."
+     b. Komunikat użytkownika: "USER: Proszę o wyjaśnienie funkcji usługi."
 2. `#handleApiResponse(response: any): Response`
    - Prywatna metoda przetwarzająca odpowiedź z API, walidująca ją względem `response_format`.
 3. `#logError(error: any): void`
@@ -72,6 +77,7 @@ Konstruktor usługi inicjalizuje konfigurację parametrów modelu, kluczy API i 
    - `#config`: Konfiguracja usługi.
 
 ## 5. Obsługa błędów
+
 1. Błąd sieciowy (np. brak połączenia, timeout).
    - Rozwiązanie: Automatyczny retry z mechanizmem exponential backoff.
 2. Błąd uwierzytelnienia (np. nieprawidłowy klucz API).
@@ -84,10 +90,12 @@ Konstruktor usługi inicjalizuje konfigurację parametrów modelu, kluczy API i 
    - Rozwiązanie: Mechanizmy retry lub fallback oraz przekazywanie informacji o błędzie do użytkownika.
 
 ## 6. Kwestie bezpieczeństwa
+
 1. Przechowywanie kluczy API wyłącznie w zmiennych środowiskowych z ograniczonym dostępem.
 2. Ograniczenie logowania danych wrażliwych.
 
 ## 7. Plan wdrożenia krok po kroku
+
 1. **Inicjalizacja projektu i konfiguracja środowiska:**
    - Ustawienie zmiennych środowiskowych (np. `OPENROUTER_API_KEY`, `MODEL_NAME`).
    - Wdrożenie menedżera konfiguracji.
@@ -113,4 +121,4 @@ Konstruktor usługi inicjalizuje konfigurację parametrów modelu, kluczy API i 
    - `response_format`: Definicja schematu odpowiedzi, np.:
      `{ type: 'json_schema', json_schema: { name: 'chatResponse', strict: true, schema: { answer: 'string', confidence: 'number' } } }`
    - Nazwa modelu: Przykładowa wartość, np. "gpt-4".
-   - Parametry modelu: Przykładowo `{ temperature: 0.7, max_tokens: 512, top_p: 0.9 }`. 
+   - Parametry modelu: Przykładowo `{ temperature: 0.7, max_tokens: 512, top_p: 0.9 }`.

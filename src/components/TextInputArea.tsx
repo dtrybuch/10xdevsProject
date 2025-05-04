@@ -4,10 +4,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 interface TextInputAreaProps {
   value: string;
   onChange: (value: string) => void;
-  'data-test-id'?: string;
+  "data-test-id"?: string;
 }
 
-export function TextInputArea({ value, onChange, 'data-test-id': testId }: TextInputAreaProps) {
+export function TextInputArea({ value, onChange, "data-test-id": testId }: TextInputAreaProps) {
   const charCount = value.length;
   const isValid = charCount >= 1000 && charCount <= 10000;
   const remainingChars = 10000 - charCount;
@@ -36,4 +36,4 @@ export function TextInputArea({ value, onChange, 'data-test-id': testId }: TextI
       )}
     </div>
   );
-} 
+}

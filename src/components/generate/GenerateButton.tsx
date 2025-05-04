@@ -5,10 +5,10 @@ interface GenerateButtonProps {
   onClick: () => void;
   disabled: boolean;
   isLoading?: boolean;
-  'data-test-id'?: string;
+  "data-test-id"?: string;
 }
 
-export function GenerateButton({ onClick, disabled, isLoading, 'data-test-id': testId }: GenerateButtonProps) {
+export function GenerateButton({ onClick, disabled, isLoading, "data-test-id": testId }: GenerateButtonProps) {
   return (
     <Button
       onClick={onClick}
@@ -23,8 +23,8 @@ export function GenerateButton({ onClick, disabled, isLoading, 'data-test-id': t
           Generating...
         </>
       ) : (
-        'Generate Flashcards'
+        "Generate Flashcards"
       )}
     </Button>
   );
-} 
+}

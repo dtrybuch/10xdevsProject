@@ -1,8 +1,8 @@
-import type { Page } from '@playwright/test';
-import { GenerateFlashcardsPage } from './GenerateFlashcardsPage';
-import { FlashcardProposalListPage } from './FlashcardProposalListPage';
-import { EditFlashcardDialogPage } from './EditFlashcardDialogPage';
-import { LoginPage } from './LoginPage';
+import type { Page } from "@playwright/test";
+import { GenerateFlashcardsPage } from "./GenerateFlashcardsPage";
+import { FlashcardProposalListPage } from "./FlashcardProposalListPage";
+import { EditFlashcardDialogPage } from "./EditFlashcardDialogPage";
+import { LoginPage } from "./LoginPage";
 
 export class FlashcardsApp {
   readonly generatePage: GenerateFlashcardsPage;
@@ -18,53 +18,58 @@ export class FlashcardsApp {
   }
 
   // Navigation
-  async goto(path = '/') {
+  async goto(path = "/") {
     console.log(`Navigating to ${path}`);
     await this.page.goto(path);
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState("networkidle");
   }
 
   // Authentication
   async login(email: string, password: string) {
     console.log(`Attempting to log in as ${email}`);
     await this.loginPage.login(email, password);
-    
+
     try {
       await this.loginPage.expectLoggedIn();
-      console.log('Login successful');
+      console.log("Login successful");
       return true;
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
       return false;
     }
   }
 
   // Common workflows
   async setupAuthenticatedSession() {
-    console.log('Setting up authenticated session');
-    
+    console.log("Setting up authenticated session");
+
     // Go to login page
-    await this.goto('/login');
-    
+    await this.goto("/login");
+
     // Check if already logged in by looking for user menu
     const userMenuVisible = await this.page.locator('[data-test-id="user-menu"]').isVisible();
     if (userMenuVisible) {
-      console.log('Already logged in, skipping login process');
+      console.log("Already logged in, skipping login process");
       return;
     }
+
+    // Get environment variables
+    const username = process.env.E2E_USERNAME;
+    const password = process.env.E2E_PASSWORD;
     
-    // Attempt login
-    const loginSuccessful = await this.login(
-      process.env.E2E_USERNAME!,
-      process.env.E2E_PASSWORD!
-    );
-    
-    if (!loginSuccessful) {
-      throw new Error('Failed to establish authenticated session');
+    if (!username || !password) {
+      throw new Error("Required environment variables E2E_USERNAME or E2E_PASSWORD are missing");
     }
-    
+
+    // Attempt login
+    const loginSuccessful = await this.login(username, password);
+
+    if (!loginSuccessful) {
+      throw new Error("Failed to establish authenticated session");
+    }
+
     // Go to generate page after successful login
-    await this.goto('/generate');
+    await this.goto("/generate");
   }
 
   async generateFlashcards(text: string) {
@@ -76,14 +81,14 @@ export class FlashcardsApp {
   async editFlashcard(index: number, newContent: { front?: string; back?: string }) {
     await this.proposalList.editFlashcard(index);
     await this.editDialog.expectDialogVisible();
-    
+
     if (newContent.front) {
       await this.editDialog.editFront(newContent.front);
     }
     if (newContent.back) {
       await this.editDialog.editBack(newContent.back);
     }
-    
+
     await this.editDialog.save();
     await this.editDialog.expectDialogNotVisible();
   }
@@ -95,4 +100,4 @@ export class FlashcardsApp {
     }
     await this.generatePage.saveSelectedFlashcards();
   }
-} 
+}

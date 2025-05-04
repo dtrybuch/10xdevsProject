@@ -5,16 +5,16 @@
 export const config = {
   // AI Service Configuration
   aiService: {
-    url: 'https://openrouter.ai/api/v1/',
-    apiKey: import.meta.env.OPENROUTER_API_KEY || '',
+    url: "https://openrouter.ai/api/v1/",
+    apiKey: import.meta.env.OPENROUTER_API_KEY || "",
   },
-  
+
   // Supabase Configuration
   supabase: {
-    url: import.meta.env.PUBLIC_SUPABASE_URL || '',
-    anonKey: import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '',
+    url: import.meta.env.PUBLIC_SUPABASE_URL || "",
+    anonKey: import.meta.env.PUBLIC_SUPABASE_ANON_KEY || "",
   },
-  
+
   // API Configuration
   api: {
     maxTextLength: 10000,
@@ -22,4 +22,4 @@ export const config = {
 } as const;
 
 // Type for the config object
-export type Config = typeof config; 
+export type Config = typeof config;

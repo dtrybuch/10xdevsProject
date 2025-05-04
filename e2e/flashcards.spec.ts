@@ -1,38 +1,42 @@
-import { test, expect } from '@playwright/test';
-import { FlashcardsApp } from './page-objects/FlashcardsApp';
-import { signInWithEmail, signOut, cleanupTestData } from './helpers/supabase';
+import { test, expect } from "@playwright/test";
+import { FlashcardsApp } from "./page-objects/FlashcardsApp";
+import { signInWithEmail, signOut, cleanupTestData } from "./helpers/supabase";
 
-test.describe('Flashcards Generation Flow', () => {
+test.describe("Flashcards Generation Flow", () => {
   let app: FlashcardsApp;
   let userId: string;
 
   test.beforeAll(async () => {
     // Check if environment variables are set
-    if (!process.env.E2E_USERNAME) throw new Error('E2E_USERNAME env variable is missing');
-    if (!process.env.E2E_PASSWORD) throw new Error('E2E_PASSWORD env variable is missing');
-    
-    console.log('Starting e2e tests with user:', process.env.E2E_USERNAME);
-    
+    if (!process.env.E2E_USERNAME) throw new Error("E2E_USERNAME env variable is missing");
+    if (!process.env.E2E_PASSWORD) throw new Error("E2E_PASSWORD env variable is missing");
+
+    console.log("Starting e2e tests with user:", process.env.E2E_USERNAME);
+
     try {
       // Zaloguj się przez Supabase i zapisz ID użytkownika
-      const authData = await signInWithEmail(
-        process.env.E2E_USERNAME!,
-        process.env.E2E_PASSWORD!
-      );
-      userId = authData.user.id;
-      console.log('Authentication successful, user ID:', userId);
+      const username = process.env.E2E_USERNAME;
+      const password = process.env.E2E_PASSWORD;
       
+      if (!username || !password) {
+        throw new Error("Required environment variables are missing");
+      }
+      
+      const authData = await signInWithEmail(username, password);
+      userId = authData.user.id;
+      console.log("Authentication successful, user ID:", userId);
+
       // Wyczyść dane testowe przed rozpoczęciem testów
       await cleanupTestData(userId);
     } catch (err) {
-      console.error('Error in beforeAll hook:', err);
+      console.error("Error in beforeAll hook:", err);
       throw err;
     } finally {
       try {
         // Wyloguj się, żeby testy mogły się zalogować przez UI
         await signOut();
       } catch (err) {
-        console.error('Error signing out in beforeAll:', err);
+        console.error("Error signing out in beforeAll:", err);
         // Continue despite sign out errors
       }
     }
@@ -40,15 +44,15 @@ test.describe('Flashcards Generation Flow', () => {
 
   test.beforeEach(async ({ page }) => {
     app = new FlashcardsApp(page);
-    
+
     // Go to the app page first
     await app.goto();
-    
+
     try {
       // Logowanie przez UI
       await app.setupAuthenticatedSession();
     } catch (err) {
-      console.error('Error in beforeEach during login:', err);
+      console.error("Error in beforeEach during login:", err);
       // Take a screenshot on login failure to help debug
       await page.screenshot({ path: `login-error-${Date.now()}.png` });
       throw err;
@@ -61,13 +65,13 @@ test.describe('Flashcards Generation Flow', () => {
       try {
         await cleanupTestData(userId);
       } catch (err) {
-        console.error('Error cleaning up test data:', err);
+        console.error("Error cleaning up test data:", err);
         // Continue despite cleanup errors
       }
     }
   });
 
-  test('should generate and manage flashcards', async () => {
+  test("should generate and manage flashcards", async () => {
     // ARRANGE - przygotowanie tekstu do generowania fiszek
     const sampleText = `
       TypeScript is a programming language developed and maintained by Microsoft. 
@@ -91,41 +95,40 @@ test.describe('Flashcards Generation Flow', () => {
 
     // Sprawdzenie czy wygenerowano fiszki
     await app.proposalList.expectFlashcardCount(5); // Zakładamy, że generuje się 5 fiszek
-    
 
     // Akceptowanie wybranych fiszek
     await app.acceptAndSaveFlashcards([0, 2]); // Akceptujemy pierwszą i trzecią fiszkę
   });
 
-  test('should handle validation errors', async () => {
+  test("should handle validation errors", async () => {
     // Test dla zbyt krótkiego tekstu
-    const shortText = 'Too short text';
+    const shortText = "Too short text";
     await app.generatePage.enterText(shortText);
     await app.generatePage.expectGenerateButtonDisabled();
 
     // Test dla błędów edycji
-    const longText = 'A'.repeat(1500);
+    const longText = "A".repeat(1500);
     await app.generatePage.enterText(longText);
     await app.generatePage.clickGenerate();
     await app.generatePage.waitForGeneration();
 
     // Próba edycji z za długim tekstem
     await app.editFlashcard(0, {
-      front: 'A'.repeat(201), // Przekraczamy limit 200 znaków
-      back: 'Test back'
+      front: "A".repeat(201), // Przekraczamy limit 200 znaków
+      back: "Test back",
     });
 
     // Sprawdzenie czy pojawił się błąd
-    await app.editDialog.expectErrorVisible('Front side must not exceed 200 characters');
+    await app.editDialog.expectErrorVisible("Front side must not exceed 200 characters");
   });
 
-  test('should handle authentication errors', async ({ page }) => {
+  test("should handle authentication errors", async ({ page }) => {
     // Tworzymy nową instancję z nową stroną
     const newApp = new FlashcardsApp(page);
     await newApp.goto();
-    
+
     // Próba logowania z nieprawidłowymi danymi
-    await newApp.login('invalid@email.com', 'wrongpassword');
-    await newApp.loginPage.expectLoginError('Invalid credentials');
+    await newApp.login("invalid@email.com", "wrongpassword");
+    await newApp.loginPage.expectLoginError("Invalid credentials");
   });
-}); 
+});

@@ -1,5 +1,5 @@
-import type { CreateFlashcardCommand, FlashcardDTO } from '../../types';
-import { supabaseClient } from '../../db/supabase.client';
+import type { CreateFlashcardCommand, FlashcardDTO } from "../../types";
+import { supabaseClient } from "../../db/supabase.client";
 
 export async function createFlashcard(
   supabase = supabaseClient,
@@ -7,15 +7,15 @@ export async function createFlashcard(
   command: CreateFlashcardCommand
 ): Promise<FlashcardDTO> {
   const { data, error } = await supabase
-    .from('flashcards')
+    .from("flashcards")
     .insert({
       user_id: userId,
       front: command.front,
       back: command.back,
       type: command.type,
-      knowledge_status: command.knowledge_status || 'new',
+      knowledge_status: command.knowledge_status || "new",
       created_at: new Date().toISOString(),
-      last_review_date: null
+      last_review_date: null,
     })
     .select()
     .single();
@@ -25,8 +25,8 @@ export async function createFlashcard(
   }
 
   if (!data) {
-    throw new Error('Failed to create flashcard: No data returned');
+    throw new Error("Failed to create flashcard: No data returned");
   }
 
   return data;
-} 
+}

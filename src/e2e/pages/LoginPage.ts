@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Page } from "@playwright/test";
 
 export class LoginPage {
   readonly page: Page;
@@ -24,4 +24,4 @@ export class LoginPage {
     await this.fillPassword(password);
     await this.clickLoginButton();
   }
-} 
+}

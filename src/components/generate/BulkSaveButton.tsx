@@ -6,14 +6,10 @@ import type { FlashcardProposalDTO } from "@/types";
 interface BulkSaveButtonProps {
   selectedProposals: FlashcardProposalDTO[];
   onBulkSaveComplete: () => void;
-  'data-test-id'?: string;
+  "data-test-id"?: string;
 }
 
-export function BulkSaveButton({ 
-  selectedProposals, 
-  onBulkSaveComplete,
-  'data-test-id': testId
-}: BulkSaveButtonProps) {
+export function BulkSaveButton({ selectedProposals, onBulkSaveComplete, "data-test-id": testId }: BulkSaveButtonProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -27,10 +23,10 @@ export function BulkSaveButton({
       // Save flashcards one by one and track progress
       for (let i = 0; i < selectedProposals.length; i++) {
         const proposal = selectedProposals[i];
-        
-        await fetch('/api/flashcards', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+
+        await fetch("/api/flashcards", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             front: proposal.front,
             back: proposal.back,
@@ -43,7 +39,7 @@ export function BulkSaveButton({
 
       onBulkSaveComplete();
     } catch (error) {
-      console.error('Failed to save flashcards:', error);
+      console.error("Failed to save flashcards:", error);
     } finally {
       setIsSaving(false);
       setProgress(0);
@@ -56,17 +52,8 @@ export function BulkSaveButton({
 
   return (
     <div className="fixed bottom-4 right-4 flex items-center gap-2 bg-white p-4 rounded-lg shadow-lg">
-      {isSaving && (
-        <span className="text-sm text-gray-600">
-          Saving... {progress}%
-        </span>
-      )}
-      <Button
-        onClick={handleBulkSave}
-        disabled={isSaving}
-        size="lg"
-        data-test-id={testId}
-      >
+      {isSaving && <span className="text-sm text-gray-600">Saving... {progress}%</span>}
+      <Button onClick={handleBulkSave} disabled={isSaving} size="lg" data-test-id={testId}>
         {isSaving ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -75,10 +62,10 @@ export function BulkSaveButton({
         ) : (
           <>
             <Save className="mr-2 h-4 w-4" />
-            Save {selectedProposals.length} Flashcard{selectedProposals.length === 1 ? '' : 's'}
+            Save {selectedProposals.length} Flashcard{selectedProposals.length === 1 ? "" : "s"}
           </>
         )}
       </Button>
     </div>
   );
-} 
+}

@@ -16,20 +16,11 @@ interface FlashcardProposalListProps {
   }) => void;
 }
 
-export function FlashcardProposalList({ 
-  proposals,
-  onProposalsChange,
-  onStatsChange
-}: FlashcardProposalListProps) {
+export function FlashcardProposalList({ proposals, onProposalsChange, onStatsChange }: FlashcardProposalListProps) {
   const [editingProposal, setEditingProposal] = useState<FlashcardProposalDTO | null>(null);
   const [localProposals, setLocalProposals] = useState<FlashcardProposalDTO[]>(proposals);
-  
-  const { 
-    stats, 
-    incrementAccepted, 
-    incrementEdited, 
-    incrementRejected 
-  } = useGenerationStats(proposals);
+
+  const { stats, incrementAccepted, incrementEdited, incrementRejected } = useGenerationStats(proposals);
 
   // Synchronize localProposals with proposals prop
   React.useEffect(() => {
@@ -47,15 +38,13 @@ export function FlashcardProposalList({
   };
 
   const handleAccept = (proposal: FlashcardProposalDTO) => {
-    const newProposals = localProposals.map(p => 
-      p === proposal ? { ...p, status: 'accepted' as const } : p
-    );
+    const newProposals = localProposals.map((p) => (p === proposal ? { ...p, status: "accepted" as const } : p));
     updateProposals(newProposals);
     incrementAccepted();
   };
 
   const handleReject = (proposal: FlashcardProposalDTO) => {
-    const newProposals = localProposals.filter(p => p !== proposal);
+    const newProposals = localProposals.filter((p) => p !== proposal);
     updateProposals(newProposals);
     incrementRejected();
   };
@@ -65,8 +54,8 @@ export function FlashcardProposalList({
   };
 
   const handleSaveEdit = (editedProposal: FlashcardProposalDTO) => {
-    const newProposals = localProposals.map(p => 
-      p === editingProposal ? { ...editedProposal, status: 'edited' as const } : p
+    const newProposals = localProposals.map((p) =>
+      p === editingProposal ? { ...editedProposal, status: "edited" as const } : p
     );
     updateProposals(newProposals);
     incrementEdited();
@@ -89,7 +78,7 @@ export function FlashcardProposalList({
           onEdit={handleEdit}
         />
       ))}
-      
+
       {editingProposal && (
         <EditFlashcardDialog
           isOpen={true}
@@ -100,4 +89,4 @@ export function FlashcardProposalList({
       )}
     </div>
   );
-} 
+}

@@ -13,14 +13,14 @@ export default function ResetPasswordForm() {
 
   // Get URL parameters for password reset
   const getResetParams = () => {
-    if (typeof window === 'undefined') return null;
+    if (typeof window === "undefined") return null;
     const params = new URLSearchParams(window.location.search);
     return {
-      access_token: params.get('access_token'),
-      refresh_token: params.get('refresh_token'),
-      expires_in: params.get('expires_in'),
-      token_type: params.get('token_type'),
-      type: params.get('type'),
+      access_token: params.get("access_token"),
+      refresh_token: params.get("refresh_token"),
+      expires_in: params.get("expires_in"),
+      token_type: params.get("token_type"),
+      type: params.get("type"),
     };
   };
 
@@ -55,11 +55,11 @@ export default function ResetPasswordForm() {
     }
 
     try {
-      const response = await fetch('/api/auth/password-reset', {
-        method: 'POST',
+      const response = await fetch("/api/auth/password-reset", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${resetParams.access_token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${resetParams.access_token}`,
         },
         body: JSON.stringify({
           password,
@@ -68,13 +68,13 @@ export default function ResetPasswordForm() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || 'Failed to reset password');
+        throw new Error(data.error || "Failed to reset password");
       }
 
       // Redirect to login page on success with a success message
-      navigate('/login?message=password-reset-success');
+      navigate("/login?message=password-reset-success");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -112,12 +112,7 @@ export default function ResetPasswordForm() {
         disabled={isLoading}
       />
 
-      <Button 
-        type="submit" 
-        className="w-full" 
-        size="lg"
-        disabled={isLoading || !getResetParams()?.access_token}
-      >
+      <Button type="submit" className="w-full" size="lg" disabled={isLoading || !getResetParams()?.access_token}>
         {isLoading ? (
           <div className="flex items-center">
             <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
@@ -133,11 +128,9 @@ export default function ResetPasswordForm() {
 
       <div className="text-center">
         <Button variant="link" asChild>
-          <a href="/login">
-            Back to login
-          </a>
+          <a href="/login">Back to login</a>
         </Button>
       </div>
     </form>
   );
-} 
+}

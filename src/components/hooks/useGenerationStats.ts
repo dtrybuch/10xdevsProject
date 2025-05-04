@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import type { FlashcardProposalDTO } from '@/types';
+import { useState, useEffect } from "react";
 
 interface GenerationStats {
   acceptedCount: number;
@@ -8,12 +7,12 @@ interface GenerationStats {
   sessionDuration: string; // ISO 8601 duration
 }
 
-export function useGenerationStats(proposals: FlashcardProposalDTO[]) {
+export function useGenerationStats() {
   const [stats, setStats] = useState<GenerationStats>({
     acceptedCount: 0,
     editedCount: 0,
     rejectedCount: 0,
-    sessionDuration: 'PT0S'
+    sessionDuration: "PT0S",
   });
 
   const [startTime] = useState(() => new Date());
@@ -24,10 +23,10 @@ export function useGenerationStats(proposals: FlashcardProposalDTO[]) {
       const hours = Math.floor(duration / 3600000);
       const minutes = Math.floor((duration % 3600000) / 60000);
       const seconds = Math.floor((duration % 60000) / 1000);
-      
-      setStats(prev => ({
+
+      setStats((prev) => ({
         ...prev,
-        sessionDuration: `PT${hours}H${minutes}M${seconds}S`
+        sessionDuration: `PT${hours}H${minutes}M${seconds}S`,
       }));
     }, 1000);
 
@@ -35,21 +34,21 @@ export function useGenerationStats(proposals: FlashcardProposalDTO[]) {
   }, [startTime]);
 
   const incrementAccepted = () => {
-    setStats(prev => ({ ...prev, acceptedCount: prev.acceptedCount + 1 }));
+    setStats((prev) => ({ ...prev, acceptedCount: prev.acceptedCount + 1 }));
   };
 
   const incrementEdited = () => {
-    setStats(prev => ({ ...prev, editedCount: prev.editedCount + 1 }));
+    setStats((prev) => ({ ...prev, editedCount: prev.editedCount + 1 }));
   };
 
   const incrementRejected = () => {
-    setStats(prev => ({ ...prev, rejectedCount: prev.rejectedCount + 1 }));
+    setStats((prev) => ({ ...prev, rejectedCount: prev.rejectedCount + 1 }));
   };
 
   return {
     stats,
     incrementAccepted,
     incrementEdited,
-    incrementRejected
+    incrementRejected,
   };
-} 
+}

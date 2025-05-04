@@ -7,6 +7,7 @@ Interfejs użytkownika składa się z kilku głównych widoków, które odpowiad
 ## 2. Lista widoków
 
 1. **Widok rejestracji/logowania**
+
    - Ścieżka widoku: `/login` lub `/auth`
    - Główny cel: Umożliwienie użytkownikowi utworzenia konta oraz logowania.
    - Kluczowe informacje: Formularze zbierające adres e-mail i hasło, komunikaty o błędach, wskaźniki walidacji.
@@ -14,6 +15,7 @@ Interfejs użytkownika składa się z kilku głównych widoków, które odpowiad
    - UX, dostępność i względy bezpieczeństwa: Prosty i czytelny formularz, obsługa keyboard focus, natychmiastowa walidacja oraz bezpieczne przesyłanie danych.
 
 2. **Ekran generacji fiszek**
+
    - Ścieżka widoku: `/generate`
    - Główny cel: Umożliwienie użytkownikowi wklejenia tekstu (od 1000 do 10 000 znaków) i wygenerowania kandydatów na fiszki przez AI zmozliwościa ich zaakceptowania, edycji i usunięcia.
    - Kluczowe informacje: Pole tekstowe z informacją o limicie znaków, przycisk inicjujący proces generowania, wizualizacja stanu przetwarzania (np. spinner lub skeletony) oraz komunikaty błędów.
@@ -21,6 +23,7 @@ Interfejs użytkownika składa się z kilku głównych widoków, które odpowiad
    - UX, dostępność i względy bezpieczeństwa: Wyraźne komunikaty o ograniczeniach, responsywny interfejs, natychmiastowa informacja zwrotna o postępie, walidacja limitu znaków.
 
 3. **Widok listy fiszek ("Moje fiszki")**
+
    - Ścieżka widoku: `/flashcards`
    - Główny cel: Prezentacja wszystkich fiszek użytkownika wraz z możliwością edycji, usuwania i zatwierdzania fiszek.
    - Kluczowe informacje: Lista fiszek z danymi (przód, tył, status), opcje zaznaczania fiszek do zatwierdzenia zbiorczego, przyciski edycji i usuwania.
@@ -28,6 +31,7 @@ Interfejs użytkownika składa się z kilku głównych widoków, które odpowiad
    - UX, dostępność i względy bezpieczeństwa: Intuicyjna nawigacja w liście, potwierdzenia przed usunięciem, czytelny układ i responsywność, mechanizmy zabezpieczające przed przypadkową akcją.
 
 4. **Dashboard**
+
    - Ścieżka widoku: `/dashboard`
    - Główny cel: Prezentacja statystyk użytkownika, podsumowań sesji oraz stanu fiszek.
    - Kluczowe informacje: Liczba fiszek, statystyki sesji, najnowsze aktywności, wykresy i karty informacyjne.
@@ -35,6 +39,7 @@ Interfejs użytkownika składa się z kilku głównych widoków, które odpowiad
    - UX, dostępność i względy bezpieczeństwa: Przejrzysty układ zapewniający szybki dostęp do najważniejszych danych, czytelne wizualizacje, responsywność oraz ochrona danych wizualnych.
 
 5. **Panel użytkownika (Profil/ustawienia)**
+
    - Ścieżka widoku: `/profil` lub `/settings`
    - Główny cel: Zarządzanie danymi użytkownika, w tym edycja profilu, zmiana hasła oraz konfiguracja ustawień konta.
    - Kluczowe informacje: Dane osobowe, opcje zmiany hasła, ustawienia prywatności.
@@ -74,4 +79,4 @@ Interfejs użytkownika składa się z kilku głównych widoków, które odpowiad
 - Karty (cards): Do prezentacji statystyk i ważnych informacji na dashboardzie.
 - Komponent sesji powtórkowej: Umożliwia interaktywną naukę z natychmiastową informacją zwrotną.
 - Globalny kontekst aplikacji (React Context): Zarządza stanem logowania, danymi użytkownika i danymi pobieranymi z API, umożliwiając spójność danych w aplikacji.
-- Komponenty powiadomień i alertów: Informują użytkownika o sukcesie operacji, błędach lub wymaganych działaniach potwierdzających, dbając o UX i bezpieczeństwo. 
+- Komponenty powiadomień i alertów: Informują użytkownika o sukcesie operacji, błędach lub wymaganych działaniach potwierdzających, dbając o UX i bezpieczeństwo.

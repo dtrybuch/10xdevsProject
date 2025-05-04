@@ -3,6 +3,7 @@
 ## 1. Resources
 
 ### 1.1 Flashcards
+
 - Corresponds to the `flashcards` table in the database.
 - Attributes:
   - `id`: Identifier of the flashcard (BIGSERIAL).
@@ -15,6 +16,7 @@
   - `created_at` & `updated_at`: Timestamps for record creation and update.
 
 ### 1.2 Generation Error Logs
+
 - Corresponds to the `generation_error_logs` table in the database.
 - Attributes:
   - `id`: Identifier (BIGSERIAL).
@@ -27,6 +29,7 @@
   - `created_at`: Timestamp of error log creation.
 
 ### 1.3 Generation Sessions
+
 - Corresponds to the `generation_sessions` table in the database.
 - Attributes:
   - `id`: Identifier (BIGSERIAL).
@@ -42,6 +45,7 @@ The API endpoints are designed to provide full CRUD functionality and business l
 ### 2.1 Flashcards Endpoints
 
 1. **List Flashcards**
+
    - Method: `GET`
    - URL: `/flashcards`
    - Description: Retrieves a paginated list of a user's flashcards with options for filtering and sorting.
@@ -53,6 +57,7 @@ The API endpoints are designed to provide full CRUD functionality and business l
    - Error Codes: 401 Unauthorized, 400 Bad Request
 
 2. **Get Flashcard Details**
+
    - Method: `GET`
    - URL: `/flashcards/{id}`
    - Description: Retrieves details for a specific flashcard by its ID.
@@ -61,6 +66,7 @@ The API endpoints are designed to provide full CRUD functionality and business l
    - Error Codes: 404 Not Found, 401 Unauthorized
 
 3. **Create Flashcard**
+
    - Method: `POST`
    - URL: `/flashcards`
    - Description: Creates a new flashcard (both manual creation or accepting an AI-generated candidate).
@@ -78,6 +84,7 @@ The API endpoints are designed to provide full CRUD functionality and business l
    - Error Codes: 400 Bad Request, 401 Unauthorized
 
 4. **Update Flashcard**
+
    - Method: `PUT` or `PATCH`
    - URL: `/flashcards/{id}`
    - Description: Updates an existing flashcard's details.
@@ -87,6 +94,7 @@ The API endpoints are designed to provide full CRUD functionality and business l
    - Error Codes: 400 Bad Request, 404 Not Found, 401 Unauthorized
 
 5. **Delete Flashcard**
+
    - Method: `DELETE`
    - URL: `/flashcards/{id}`
    - Description: Deletes the specified flashcard.
@@ -108,7 +116,6 @@ The API endpoints are designed to provide full CRUD functionality and business l
    - Success Codes: 200 OK
    - Error Codes: 400 Bad Request, 401 Unauthorized, 500 Internal Server Error
 
-
 ### 2.2 Generation Error Logs Endpoints
 
 1. **List Generation Error Logs**
@@ -120,11 +127,12 @@ The API endpoints are designed to provide full CRUD functionality and business l
    - Success Codes: 200 OK
    - Error Codes: 401 Unauthorized, 400 Bad Request
 
-*Note: Typically, error logs are created automatically by the system, and this endpoint is for review or debugging purposes.*
+_Note: Typically, error logs are created automatically by the system, and this endpoint is for review or debugging purposes._
 
 ### 2.3 Generation Sessions Endpoints
 
 1. **List Generation Sessions**
+
    - Method: `GET`
    - URL: `/sessions`
    - Description: Retrieves all study session records for the authenticated user.
@@ -133,6 +141,7 @@ The API endpoints are designed to provide full CRUD functionality and business l
    - Error Codes: 401 Unauthorized
 
 2. **Create / Record a Session**
+
    - Method: `POST`
    - URL: `/sessions`
    - Description: Creates a new study session record; intended to log session duration and flashcard review outcomes (accepted, edited, rejected counts).
@@ -166,6 +175,7 @@ The API endpoints are designed to provide full CRUD functionality and business l
 ## 4. Validation and Business Logic
 
 - **Input Validation:**
+
   - Flashcards: Ensure `front` is ≤ 200 characters and `back` is ≤ 500 characters.
   - Generated text for AI flashcard generation: Maximum 10,000 characters.
   - Generation error logs: `source_text_length` must be between 1000 and 10000.
@@ -181,6 +191,7 @@ The API endpoints are designed to provide full CRUD functionality and business l
 ## 5. Security and Performance Considerations
 
 - **Security:**
+
   - Use HTTPS for all API communications.
   - Authentication via JWT ensures that only authorized users can access endpoints.
   - RLS in the database reinforces that users only interact with their own data.
@@ -193,4 +204,4 @@ The API endpoints are designed to provide full CRUD functionality and business l
 
 ---
 
-This REST API plan comprehensively maps the database schema and PRD functional requirements to a set of clear, RESTful endpoints embracing the chosen tech stack. It ensures proper validation, business logic enforcement, security, and performance throughout the API lifecycle. 
+This REST API plan comprehensively maps the database schema and PRD functional requirements to a set of clear, RESTful endpoints embracing the chosen tech stack. It ensures proper validation, business logic enforcement, security, and performance throughout the API lifecycle.

@@ -9,10 +9,7 @@ interface BulkSaveButtonProps {
   onSaveComplete?: () => void;
 }
 
-export function BulkSaveButton({ 
-  selectedProposals,
-  onSaveComplete
-}: BulkSaveButtonProps) {
+export function BulkSaveButton({ selectedProposals, onSaveComplete }: BulkSaveButtonProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -25,18 +22,18 @@ export function BulkSaveButton({
       let saved = 0;
 
       for (const proposal of selectedProposals) {
-        if (proposal.status !== 'accepted' && proposal.status !== 'edited') continue;
+        if (proposal.status !== "accepted" && proposal.status !== "edited") continue;
 
         try {
-          const response = await fetch('/api/flashcards/createFlashcard', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+          const response = await fetch("/api/flashcards/createFlashcard", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               front: proposal.front,
               back: proposal.back,
-              type: 'AI',
-              knowledge_status: 'new'
-            })
+              type: "AI",
+              knowledge_status: "new",
+            }),
           });
 
           if (!response.ok) {
@@ -47,8 +44,8 @@ export function BulkSaveButton({
           saved++;
           setProgress(Math.round((saved / total) * 100));
         } catch (error) {
-          toast.error('Failed to save flashcard', {
-            description: error instanceof Error ? error.message : 'Unknown error occurred'
+          toast.error("Failed to save flashcard", {
+            description: error instanceof Error ? error.message : "Unknown error occurred",
           });
         }
       }
@@ -57,10 +54,9 @@ export function BulkSaveButton({
         toast.success(`Successfully saved ${saved} flashcard(s)`);
         onSaveComplete?.();
       }
-
     } catch (error) {
-      toast.error('Failed to save flashcards', {
-        description: error instanceof Error ? error.message : 'An unexpected error occurred',
+      toast.error("Failed to save flashcards", {
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
       });
     } finally {
       setIsSaving(false);
@@ -68,14 +64,10 @@ export function BulkSaveButton({
     }
   };
 
-  const acceptedCount = selectedProposals.filter(p => p.status === 'accepted' || p.status === 'edited').length;
+  const acceptedCount = selectedProposals.filter((p) => p.status === "accepted" || p.status === "edited").length;
 
   return (
-    <Button
-      className="w-full"
-      onClick={handleSave}
-      disabled={isSaving || acceptedCount === 0}
-    >
+    <Button className="w-full" onClick={handleSave} disabled={isSaving || acceptedCount === 0}>
       {isSaving ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -84,9 +76,9 @@ export function BulkSaveButton({
       ) : (
         <>
           <Save className="mr-2 h-4 w-4" />
-          Save {acceptedCount} Flashcard{acceptedCount !== 1 ? 's' : ''}
+          Save {acceptedCount} Flashcard{acceptedCount !== 1 ? "s" : ""}
         </>
       )}
     </Button>
   );
-} 
+}

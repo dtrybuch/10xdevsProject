@@ -22,11 +22,15 @@ export function FlashcardProposalListItem({
     <Card className="overflow-hidden" data-test-id={`flashcard-proposal-${index}`}>
       <CardHeader className="pb-4">
         <CardTitle className="text-lg font-semibold">Front</CardTitle>
-        <p className="mt-2 whitespace-pre-wrap" data-test-id="flashcard-front">{proposal.front}</p>
+        <p className="mt-2 whitespace-pre-wrap" data-test-id="flashcard-front">
+          {proposal.front}
+        </p>
       </CardHeader>
       <CardContent className="pb-4">
         <CardTitle className="text-lg font-semibold mb-2">Back</CardTitle>
-        <p className="whitespace-pre-wrap" data-test-id="flashcard-back">{proposal.back}</p>
+        <p className="whitespace-pre-wrap" data-test-id="flashcard-back">
+          {proposal.back}
+        </p>
       </CardContent>
       <CardFooter className="flex justify-between gap-4 pt-4 border-t">
         <Button
@@ -34,18 +38,18 @@ export function FlashcardProposalListItem({
           size="sm"
           className="flex-1"
           onClick={() => onAccept(proposal)}
-          disabled={proposal.status === 'accepted'}
+          disabled={proposal.status === "accepted"}
           data-test-id="accept-flashcard-button"
         >
           <Check className="w-4 h-4 mr-2" />
-          {proposal.status === 'accepted' ? 'Accepted' : 'Accept'}
+          {proposal.status === "accepted" ? "Accepted" : "Accept"}
         </Button>
         <Button
           variant="outline"
           size="sm"
           className="flex-1"
           onClick={() => onEdit(proposal)}
-          disabled={proposal.status === 'accepted'}
+          disabled={proposal.status === "accepted"}
           data-test-id="edit-flashcard-button"
         >
           <Edit className="w-4 h-4 mr-2" />
@@ -56,7 +60,7 @@ export function FlashcardProposalListItem({
           size="sm"
           className="flex-1"
           onClick={() => onReject(proposal)}
-          disabled={proposal.status === 'accepted'}
+          disabled={proposal.status === "accepted"}
           data-test-id="reject-flashcard-button"
         >
           <X className="w-4 h-4 mr-2" />
@@ -65,4 +69,4 @@ export function FlashcardProposalListItem({
       </CardFooter>
     </Card>
   );
-} 
+}

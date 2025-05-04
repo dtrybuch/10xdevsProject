@@ -11,4 +11,4 @@ export function AlertMessage({ message, type }: AlertMessageProps) {
       <AlertDescription>{message}</AlertDescription>
     </Alert>
   );
-} 
+}

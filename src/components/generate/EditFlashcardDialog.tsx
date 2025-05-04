@@ -9,12 +9,7 @@ interface EditFlashcardDialogProps {
   proposal: FlashcardProposalDTO;
 }
 
-export function EditFlashcardDialog({
-  isOpen,
-  onClose,
-  onSave,
-  proposal,
-}: EditFlashcardDialogProps) {
+export function EditFlashcardDialog({ isOpen, onClose, onSave, proposal }: EditFlashcardDialogProps) {
   const [front, setFront] = useState(proposal.front);
   const [back, setBack] = useState(proposal.back);
   const [errors, setErrors] = useState<{ front?: string; back?: string }>({});
@@ -51,14 +46,11 @@ export function EditFlashcardDialog({
       <div className="bg-white rounded-lg p-6 w-full max-w-[600px] space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold">Edit Flashcard</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             ✕
           </button>
         </div>
-        
+
         <div className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="front" className="block font-medium">
@@ -69,14 +61,12 @@ export function EditFlashcardDialog({
               value={front}
               onChange={(e) => setFront(e.target.value)}
               className={`w-full min-h-[100px] p-2 border rounded-md ${
-                errors.front ? 'border-red-500' : 'border-gray-200'
+                errors.front ? "border-red-500" : "border-gray-200"
               }`}
             />
-            {errors.front && (
-              <p className="text-sm text-red-500">{errors.front}</p>
-            )}
+            {errors.front && <p className="text-sm text-red-500">{errors.front}</p>}
           </div>
-          
+
           <div className="space-y-2">
             <label htmlFor="back" className="block font-medium">
               Back <span className="text-sm text-gray-500">({back.length}/500)</span>
@@ -86,12 +76,10 @@ export function EditFlashcardDialog({
               value={back}
               onChange={(e) => setBack(e.target.value)}
               className={`w-full min-h-[100px] p-2 border rounded-md ${
-                errors.back ? 'border-red-500' : 'border-gray-200'
+                errors.back ? "border-red-500" : "border-gray-200"
               }`}
             />
-            {errors.back && (
-              <p className="text-sm text-red-500">{errors.back}</p>
-            )}
+            {errors.back && <p className="text-sm text-red-500">{errors.back}</p>}
           </div>
         </div>
 
@@ -99,11 +87,9 @@ export function EditFlashcardDialog({
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleSave}>
-            Save Changes
-          </Button>
+          <Button onClick={handleSave}>Save Changes</Button>
         </div>
       </div>
     </div>
   );
-} 
+}

@@ -10,7 +10,7 @@ interface FlashcardProposalListProps {
   onAccept: (proposal: FlashcardProposalDTO) => void;
   onEdit: (proposal: FlashcardProposalDTO) => void;
   onReject: (proposal: FlashcardProposalDTO) => void;
-  'data-test-id'?: string;
+  "data-test-id"?: string;
 }
 
 export function FlashcardProposalList({
@@ -18,7 +18,7 @@ export function FlashcardProposalList({
   onAccept,
   onEdit,
   onReject,
-  'data-test-id': testId
+  "data-test-id": testId,
 }: FlashcardProposalListProps) {
   const [editingProposal, setEditingProposal] = useState<FlashcardProposalDTO | null>(null);
 
@@ -39,11 +39,15 @@ export function FlashcardProposalList({
               <div className="space-y-4">
                 <div className="space-y-2">
                   <h3 className="font-medium text-sm text-gray-500">Front</h3>
-                  <p className="p-3 bg-gray-50 rounded-md" data-test-id="flashcard-front">{proposal.front}</p>
+                  <p className="p-3 bg-gray-50 rounded-md" data-test-id="flashcard-front">
+                    {proposal.front}
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <h3 className="font-medium text-sm text-gray-500">Back</h3>
-                  <p className="p-3 bg-gray-50 rounded-md" data-test-id="flashcard-back">{proposal.back}</p>
+                  <p className="p-3 bg-gray-50 rounded-md" data-test-id="flashcard-back">
+                    {proposal.back}
+                  </p>
                 </div>
                 <div className="flex justify-end space-x-2">
                   <Button
@@ -93,4 +97,4 @@ export function FlashcardProposalList({
       )}
     </div>
   );
-} 
+}

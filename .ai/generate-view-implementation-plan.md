@@ -1,12 +1,15 @@
 # Plan implementacji widoku Generate Flashcards
 
 ## 1. Przegląd
+
 Widok "Generacja fiszek" umożliwia użytkownikowi wklejenie długiego tekstu (od 1000 do 10 000 znaków) oraz wygenerowanie propozycji fiszek przez AI. Użytkownik może przeglądać, akceptować, edytować lub odrzucać wygenerowane propozycje fiszek. Do bazy są zapisywane tylko wysylane fiszki. Celem widoku jest przyspieszenie procesu tworzenia fiszek edukacyjnych, zgodnie z wymaganiami PRD oraz potrzebami użytkowników.
 
 ## 2. Routing widoku
+
 Widok powinien być dostępny pod adresem: `/generate`.
 
 ## 3. Struktura komponentów
+
 - `GenerateFlashcardsView`: Główny komponent widoku, zawierający logikę walidacji, stan wprowadzanego tekstu, ładowanie oraz zarządzanie wynikami.
   - `TextInputArea`: Komponent do wprowadzania tekstu przez użytkownika.
   - `GenerateButton`: Przycisk inicjujący proces generowania fiszek.
@@ -17,7 +20,9 @@ Widok powinien być dostępny pod adresem: `/generate`.
   - `BulkSaveButton`: Przycisk do zapisywania zaakceptowanych fiszek lub wszystkich.
 
 ## 4. Szczegóły komponentów
+
 ### GenerateFlashcardsView
+
 - Opis: Główny kontener strony, zarządza logiką widoku, stanem formularza i wynikami z API.
 - Główne elementy: Textarea, przycisk "Generuj", wskaźnik ładowania, lista propozycji fiszek, alerty błędów.
 - Obsługiwane interakcje:
@@ -33,6 +38,7 @@ Widok powinien być dostępny pod adresem: `/generate`.
 - Propsy: Nie przyjmuje zewnętrznych propsów; zarządza własnym stanem.
 
 ### TextInputArea
+
 - Opis: Pole tekstowe do wprowadzania długiego tekstu przez użytkownika.
 - Główne elementy: `<textarea>` z informacją o limicie znaków.
 - Interakcje: onChange, onBlur (walidacja).
@@ -41,6 +47,7 @@ Widok powinien być dostępny pod adresem: `/generate`.
 - Propsy: `value`, `onChange`, `errorMessage`.
 
 ### GenerateButton
+
 - Opis: Przycisk inicjujący wywołanie API.
 - Elementy: `<button>` z napisem "Generuj".
 - Interakcje: onClick.
@@ -48,12 +55,14 @@ Widok powinien być dostępny pod adresem: `/generate`.
 - Propsy: `disabled` (flag), `onClick` handler.
 
 ### SkeletonLoader
+
 - Opis: Wskaźnik ładowania, który pojawia się podczas oczekiwania na wyniki z API.
 - Elementy: Skeletor.
 - Interakcje: Brak bezpośredniej interakcji.
 - Propsy: Widoczność (boolean).
 
 ### FlashcardProposalList
+
 - Opis: Lista wyświetlająca wygenerowane przez AI propozycje fiszek.
 - Główne elementy: Lista elementów z dwoma polami: `front` i `back`.
 - Interakcje:
@@ -65,6 +74,7 @@ Widok powinien być dostępny pod adresem: `/generate`.
 - Propsy: `proposals` (lista), `onAccept`, `onEdit`, `onReject`.
 
 ### FlashcardProposalListItem
+
 - Opis: Komponent prezentujący pojedynczą propozycję fiszki.
 - Główne elementy: Wyświetlenie treści fiszki (pola `front` i `back`) oraz przyciski/ikony umożliwiające akceptację, edycję i odrzucenie propozycji.
 - Interakcje: Obsługa kliknięć przycisków, które wywołują przekazane callbacki (np. `onAccept`, `onEdit`, `onReject`).
@@ -73,12 +83,14 @@ Widok powinien być dostępny pod adresem: `/generate`.
 - Propsy: `proposal` (obiekt typu FlashcardProposalDTO), `onAccept` (funkcja callback), `onEdit` (funkcja callback), `onReject` (funkcja callback).
 
 ### AlertMessage
+
 - Opis: Komponent do wyświetlania komunikatów o błędach i walidacji.
 - Elementy: Komunikat tekstowy z odpowiednim stylem (np. kolor czerwony dla błędów).
 - Interakcje: Brak.
 - Propsy: `message` (string), `type` (np. error, info).
 
 ### BulkSaveButton
+
 - Opis: Przycisk, który umożliwia zapisanie wszystkich zaakceptowanych fiszek w postaci zbiorczego zapytania do endpointu tworzenia fiszek. Używa endpointu `POST /flashcards` zgodnie z typem `CreateFlashcardCommand`, który definiuje strukturę pojedynczej fiszki (front, back, type oraz opcjonalnie knowledge_status).
 - Główne elementy: `<button>` z napisem "Zapisz wybrane". Może wyświetlać stan przetwarzania przy użyciu skeletona lub potwierdzenie zapisu.
 - Interakcje: onClick - inicjuje funkcję, która zbiera zaakceptowane fiszki i wysyła zapytania API dla każdej z nich.
@@ -87,6 +99,7 @@ Widok powinien być dostępny pod adresem: `/generate`.
 - Propsy: `selectedProposals` (lista zaakceptowanych fiszek), `onBulkSaveComplete` (callback po zakończeniu operacji), oraz opcjonalny `isLoading` (boolean).
 
 ## 5. Typy
+
 - `GenerationCreateResponseDto`:
   - `generation_id: number`
   - `flashcards_proposal: FlashcardProposalDTO[]`
@@ -102,10 +115,12 @@ Widok powinien być dostępny pod adresem: `/generate`.
   - `proposals: FlashcardProposalDTO[]`
 
 ## 6. Zarządzanie stanem
+
 - Użycie hooków `useState` do zarządzania stanem inputu, ładowaniem, błędami i propozycjami.
 - Możliwe utworzenie custom hooka `useGenerateFlashcards` do enkapsulacji logiki wywołania API i aktualizacji stanu.
 
 ## 7. Integracja API
+
 - Endpoint do generacji fiszek: `POST /generations`
   - Żądanie: `{ "text": "..." }`
   - Odpowiedź: `GenerationCreateResponseDto`
@@ -116,6 +131,7 @@ Widok powinien być dostępny pod adresem: `/generate`.
 - Implementacja przy użyciu funkcji `fetch` lub biblioteki (np. axios) zgodnie z typami zdefiniowanymi w `types.ts`.
 
 ## 8. Interakcje użytkownika
+
 - Użytkownik wprowadza tekst w polu tekstowym – walidacja długości w czasie rzeczywistym.
 - Po kliknięciu przycisku "Generuj", widok przechodzi w stan ładowania (LoadingSpinner) i wykonywane jest wywołanie API.
 - Po otrzymaniu danych, lista propozycji fiszek jest wyświetlana.
@@ -123,6 +139,7 @@ Widok powinien być dostępny pod adresem: `/generate`.
 - Akceptacja propozycji wywołuje kolejny request do endpointu `/flashcards` przy akceptacji.
 
 ## 9. Warunki i walidacja
+
 - Tekst wejściowy musi mieć długość między 1000 a 10 000 znaków.
 - Przycisk "Generuj" jest aktywny tylko przy poprawnych danych.
 - Walidacja edycji fiszek:
@@ -131,11 +148,13 @@ Widok powinien być dostępny pod adresem: `/generate`.
 - W przypadku błędów walidacji lub problemów serwerowych, użytkownik otrzyma komunikat błędu za pomocą komponentu AlertMessage.
 
 ## 10. Obsługa błędów
+
 - Błędy walidacji są wyświetlane lokalnie.
 - Błędy wynikające z odpowiedzi API (np. 400 lub 500) skutkują wyświetleniem komunikatu w komponencie AlertMessage.
 - Mechanizm retry dla krytycznych błędów lub informacja o konieczności ponowienia akcji.
 
 ## 11. Kroki implementacji
+
 1. Utworzenie struktury widoku: stworzenie nowej strony `/generate` wykorzystując Astro.
 2. Implementacja głównego komponentu `GenerateFlashcardsView` z podziałem na komponenty podrzędne.
 3. Dodanie pola tekstowego (TextInputArea) z walidacją długości wpisanego tekstu.
@@ -145,4 +164,4 @@ Widok powinien być dostępny pod adresem: `/generate`.
 7. Przetwarzanie i wyświetlanie wyników w komponencie `FlashcardProposalList`.
 8. Dodanie funkcjonalności akceptacji, edycji i odrzucenia propozycji fiszek, wraz z wywołaniem endpointu `/flashcards` przy akceptacji.
 9. Testowanie interakcji, walidacji oraz obsługi błędów.
-10. Dokumentacja kodu i przygotowanie komponentów do ewentualnych modyfikacji. 
+10. Dokumentacja kodu i przygotowanie komponentów do ewentualnych modyfikacji.

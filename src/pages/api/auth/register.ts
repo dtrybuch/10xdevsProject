@@ -1,19 +1,21 @@
-import type { APIRoute } from 'astro';
-import { createSupabaseServerInstance } from '../../../db/supabase.client';
-import { z } from 'zod';
+import type { APIRoute } from "astro";
+import { createSupabaseServerInstance } from "../../../db/supabase.client";
+import { z } from "zod";
 
 // Prevent static prerendering
 export const prerender = false;
 
 // Validation schema for registration request
-const registerSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const registerSchema = z
+  .object({
+    email: z.string().email("Invalid email format"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   try {
@@ -29,9 +31,9 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
 
     if (error) {
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           error: error.message,
-          status: 'error',
+          status: "error",
         }),
         { status: 400 }
       );
@@ -42,29 +44,29 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     // automatically sets the session cookies
 
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         user: data.user,
-        status: 'success',
+        status: "success",
       }),
       { status: 200 }
     );
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           error: error.errors[0].message,
-          status: 'error',
+          status: "error",
         }),
         { status: 400 }
       );
     }
 
     return new Response(
-      JSON.stringify({ 
-        error: 'An unexpected error occurred',
-        status: 'error',
+      JSON.stringify({
+        error: "An unexpected error occurred",
+        status: "error",
       }),
       { status: 500 }
     );
   }
-}; 
+};

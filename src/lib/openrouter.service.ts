@@ -4,8 +4,8 @@ import type {
   ChatResponse,
   Message,
   ApiRequestPayload,
-  OpenRouterApiResponse
-} from './openrouter.types';
+  OpenRouterApiResponse,
+} from "./openrouter.types";
 import {
   responseFormatSchema,
   configSchema,
@@ -14,8 +14,8 @@ import {
   OpenRouterError,
   OpenRouterValidationError,
   OpenRouterApiError,
-  DEFAULT_CONFIG
-} from './openrouter.types';
+  DEFAULT_CONFIG,
+} from "./openrouter.types";
 
 export class OpenRouterService {
   readonly #config: OpenRouterConfig;
@@ -32,25 +32,27 @@ export class OpenRouterService {
     try {
       // Merge provided config with defaults
       const fullConfig: OpenRouterConfig = {
-        apiKey: config.apiKey || '',
+        apiKey: config.apiKey || "",
         modelName: DEFAULT_CONFIG.modelName,
         modelParameters: DEFAULT_CONFIG.modelParameters,
         requestTimeout: DEFAULT_CONFIG.requestTimeout,
         rateLimitDelay: DEFAULT_CONFIG.rateLimitDelay,
         maxRetries: DEFAULT_CONFIG.maxRetries,
-        ...config
+        ...config,
       };
 
       const validatedConfig = configSchema.parse(fullConfig);
-      
+
       this.#config = validatedConfig;
-      this.#baseUrl = validatedConfig.baseUrl || 'https://openrouter.ai/api/v1';
+      this.#baseUrl = validatedConfig.baseUrl || "https://openrouter.ai/api/v1";
       this.#httpClient = fetch;
       this.#requestTimeout = validatedConfig.requestTimeout || DEFAULT_CONFIG.requestTimeout;
       this.#rateLimitDelay = validatedConfig.rateLimitDelay || DEFAULT_CONFIG.rateLimitDelay;
       this.#maxRetries = validatedConfig.maxRetries || DEFAULT_CONFIG.maxRetries;
     } catch (error) {
-      throw new OpenRouterValidationError('Invalid configuration provided. Please ensure your OpenRouter API key is set correctly.');
+      throw new OpenRouterValidationError(
+        "Invalid configuration provided. Please ensure your OpenRouter API key is set correctly."
+      );
     }
   }
 
@@ -59,8 +61,8 @@ export class OpenRouterService {
     try {
       // Validate messages
       const messages: Message[] = [
-        messageSchema.parse({ role: 'system', content: systemMessage }),
-        messageSchema.parse({ role: 'user', content: userMessage })
+        messageSchema.parse({ role: "system", content: systemMessage }),
+        messageSchema.parse({ role: "user", content: userMessage }),
       ];
 
       const payload = this.#preparePayload(messages);
@@ -70,7 +72,7 @@ export class OpenRouterService {
       if (error instanceof OpenRouterError) {
         throw error;
       }
-      throw new OpenRouterError('Failed to send chat message');
+      throw new OpenRouterError("Failed to send chat message");
     }
   }
 
@@ -81,7 +83,7 @@ export class OpenRouterService {
       const validatedParams = configSchema.shape.modelParameters.parse(newParams);
       this.#config.modelParameters = validatedParams;
     } catch (error) {
-      throw new OpenRouterValidationError('Invalid model parameters provided');
+      throw new OpenRouterValidationError("Invalid model parameters provided");
     }
   }
 
@@ -95,7 +97,7 @@ export class OpenRouterService {
       model: this.#config.modelName,
       messages,
       ...this.#config.modelParameters,
-      response_format: responseFormatSchema
+      response_format: responseFormatSchema,
     };
   }
 
@@ -105,7 +107,7 @@ export class OpenRouterService {
       const now = Date.now();
       const timeSinceLastRequest = now - this.#lastRequestTime;
       if (timeSinceLastRequest < this.#rateLimitDelay) {
-        await new Promise(resolve => setTimeout(resolve, this.#rateLimitDelay - timeSinceLastRequest));
+        await new Promise((resolve) => setTimeout(resolve, this.#rateLimitDelay - timeSinceLastRequest));
       }
       this.#lastRequestTime = Date.now();
 
@@ -114,13 +116,13 @@ export class OpenRouterService {
       const timeoutId = setTimeout(() => controller.abort(), this.#requestTimeout);
 
       const response = await this.#httpClient(`${this.#baseUrl}/chat/completions`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.#config.apiKey}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.#config.apiKey}`,
         },
         body: JSON.stringify(payload),
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
@@ -128,57 +130,53 @@ export class OpenRouterService {
       if (!response.ok) {
         const errorData = await response.text();
         const isRetryable = response.status >= 500 || response.status === 429;
-        
+
         if (isRetryable && retryCount < this.#maxRetries) {
           const delay = Math.min(1000 * Math.pow(2, retryCount), 10000); // Exponential backoff with max 10s
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
           return this.#sendRequest(payload, retryCount + 1);
         }
 
-        throw new OpenRouterApiError(
-          `API request failed with status ${response.status}`,
-          response.status,
-          errorData
-        );
+        throw new OpenRouterApiError(`API request failed with status ${response.status}`, response.status, errorData);
       }
 
       const data = await response.json();
-      
+
       // Log the raw response for debugging
-      console.log('OpenRouter API Response:', JSON.stringify(data, null, 2));
-      
+      console.log("OpenRouter API Response:", JSON.stringify(data, null, 2));
+
       // Validate response
       try {
         const validatedResponse = chatResponseSchema.parse(data) as OpenRouterApiResponse;
-        
+
         // Parse the content as JSON to get our expected format
         const content = validatedResponse.choices?.[0]?.message?.content;
         if (!content) {
-          throw new OpenRouterValidationError('No content in API response choices');
+          throw new OpenRouterValidationError("No content in API response choices");
         }
-        
+
         try {
           const parsedContent = JSON.parse(content);
-          console.log('Parsed content:', JSON.stringify(parsedContent, null, 2));
-          
+          console.log("Parsed content:", JSON.stringify(parsedContent, null, 2));
+
           if (!parsedContent.answer || !Array.isArray(parsedContent.answer)) {
             throw new OpenRouterValidationError('Response content missing required "answer" array');
           }
-          
-          if (typeof parsedContent.confidence !== 'number') {
+
+          if (typeof parsedContent.confidence !== "number") {
             throw new OpenRouterValidationError('Response content missing required "confidence" number');
           }
-          
+
           // Validate each flashcard in the answer array
           for (const [index, card] of parsedContent.answer.entries()) {
-            if (!card.front || typeof card.front !== 'string') {
+            if (!card.front || typeof card.front !== "string") {
               throw new OpenRouterValidationError(`Flashcard at index ${index} missing required "front" string`);
             }
-            if (!card.back || typeof card.back !== 'string') {
+            if (!card.back || typeof card.back !== "string") {
               throw new OpenRouterValidationError(`Flashcard at index ${index} missing required "back" string`);
             }
           }
-          
+
           return parsedContent as ChatResponse;
         } catch (parseError) {
           if (parseError instanceof OpenRouterValidationError) {
@@ -197,13 +195,13 @@ export class OpenRouterService {
         throw error;
       }
 
-      if (error instanceof Error && error.name === 'AbortError') {
+      if (error instanceof Error && error.name === "AbortError") {
         if (retryCount < this.#maxRetries) {
           const delay = Math.min(1000 * Math.pow(2, retryCount), 10000);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
           return this.#sendRequest(payload, retryCount + 1);
         }
-        throw new OpenRouterError('Request timeout after max retries');
+        throw new OpenRouterError("Request timeout after max retries");
       }
 
       // Handle any other errors
@@ -212,15 +210,15 @@ export class OpenRouterService {
   }
 
   #logError(error: unknown): void {
-    console.error('[OpenRouterService] Error:', {
-      name: error instanceof Error ? error.name : 'Unknown',
-      message: error instanceof Error ? error.message : 'Unknown error',
+    console.error("[OpenRouterService] Error:", {
+      name: error instanceof Error ? error.name : "Unknown",
+      message: error instanceof Error ? error.message : "Unknown error",
       timestamp: new Date().toISOString(),
       modelName: this.#config.modelName,
       ...(error instanceof OpenRouterApiError && {
         status: error.status,
-        response: error.response
-      })
+        response: error.response,
+      }),
     });
   }
-} 
+}

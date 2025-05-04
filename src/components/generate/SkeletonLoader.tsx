@@ -2,10 +2,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface SkeletonLoaderProps {
-  'data-test-id'?: string;
+  "data-test-id"?: string;
 }
 
-export function SkeletonLoader({ 'data-test-id': testId }: SkeletonLoaderProps) {
+export function SkeletonLoader({ "data-test-id": testId }: SkeletonLoaderProps) {
   // Show 3 skeleton cards to represent loading state
   return (
     <div className="space-y-4" data-test-id={testId}>
@@ -26,4 +26,4 @@ export function SkeletonLoader({ 'data-test-id': testId }: SkeletonLoaderProps) 
       ))}
     </div>
   );
-} 
+}

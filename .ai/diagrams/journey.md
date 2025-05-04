@@ -1,6 +1,6 @@
 stateDiagram-v2
-    [*] --> StronaGlowna
-    
+[*] --> StronaGlowna
+
     state "Strona Główna" as StronaGlowna {
         [*] --> SprawdzanieAutoryzacji
         state if_auth <<choice>>
@@ -65,12 +65,12 @@ stateDiagram-v2
     NiezalogowanyUzytkownik --> Logowanie: Przycisk Zaloguj
     NiezalogowanyUzytkownik --> Rejestracja: Przycisk Rejestracja
     NiezalogowanyUzytkownik --> OdzyskiwanieHasla: Zapomniałem hasła
-    
+
     Logowanie --> PanelUzytkownika: Sukces logowania
     Rejestracja --> Logowanie: Sukces rejestracji
     OdzyskiwanieHasla --> Logowanie: Hasło zresetowane
-    
+
     ZalogowanyUzytkownik --> PanelUzytkownika: Dostęp do funkcji
     WymaganeLogowanie --> Logowanie: Przekierowanie
-    
+
     PanelUzytkownika --> [*]: Wylogowanie

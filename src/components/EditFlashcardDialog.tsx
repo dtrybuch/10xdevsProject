@@ -1,11 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogPortal,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogPortal } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -19,12 +12,7 @@ interface EditFlashcardDialogProps {
   proposal: FlashcardProposalDTO;
 }
 
-export function EditFlashcardDialog({
-  isOpen,
-  onClose,
-  onSave,
-  proposal,
-}: EditFlashcardDialogProps) {
+export function EditFlashcardDialog({ isOpen, onClose, onSave, proposal }: EditFlashcardDialogProps) {
   const [front, setFront] = useState(proposal.front);
   const [back, setBack] = useState(proposal.back);
   const [error, setError] = useState<string | null>(null);
@@ -114,4 +102,4 @@ export function EditFlashcardDialog({
       </DialogPortal>
     </Dialog>
   );
-} 
+}

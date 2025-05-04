@@ -13,13 +13,13 @@ export default function ForgotPasswordForm() {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-    
+
     if (!email) {
       setError("Email is required");
       setIsLoading(false);
       return;
     }
-    
+
     if (!/\S+@\S+\.\S+/.test(email)) {
       setError("Please enter a valid email address");
       setIsLoading(false);
@@ -28,10 +28,10 @@ export default function ForgotPasswordForm() {
 
     try {
       console.log(email);
-      const response = await fetch('/api/auth/password-recovery', {
-        method: 'POST',
+      const response = await fetch("/api/auth/password-recovery", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       });
@@ -39,12 +39,12 @@ export default function ForgotPasswordForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to send reset email');
+        throw new Error(data.error || "Failed to send reset email");
       }
 
       setIsSubmitted(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -54,14 +54,8 @@ export default function ForgotPasswordForm() {
     return (
       <div className="text-center space-y-4">
         <h3 className="text-lg font-medium">Check your email</h3>
-        <p className="text-sm text-muted-foreground">
-          We have sent a password reset link to {email}
-        </p>
-        <Button
-          variant="outline"
-          onClick={() => setIsSubmitted(false)}
-          className="mt-4"
-        >
+        <p className="text-sm text-muted-foreground">We have sent a password reset link to {email}</p>
+        <Button variant="outline" onClick={() => setIsSubmitted(false)} className="mt-4">
           <RotateCcw className="mr-2 h-4 w-4" />
           Try again
         </Button>
@@ -98,11 +92,9 @@ export default function ForgotPasswordForm() {
 
       <div className="text-center">
         <Button variant="link" asChild>
-          <a href="/login">
-            Remember your password? Sign in
-          </a>
+          <a href="/login">Remember your password? Sign in</a>
         </Button>
       </div>
     </form>
   );
-} 
+}

@@ -1,6 +1,7 @@
 # Testing Documentation
 
 This project uses two primary testing approaches:
+
 1. Unit and component testing with Vitest
 2. End-to-end testing with Playwright
 
@@ -30,28 +31,28 @@ Unit tests should be placed in the same directory as the file they are testing w
 
 ```tsx
 // Example component test
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
-import { YourComponent } from './YourComponent';
+import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
+import { YourComponent } from "./YourComponent";
 
-describe('YourComponent', () => {
-  it('renders correctly', () => {
+describe("YourComponent", () => {
+  it("renders correctly", () => {
     render(<YourComponent />);
-    
+
     // Use Testing Library queries to find elements
-    expect(screen.getByText('Expected Text')).toBeInTheDocument();
+    expect(screen.getByText("Expected Text")).toBeInTheDocument();
   });
 
-  it('handles user interactions', async () => {
+  it("handles user interactions", async () => {
     const user = userEvent.setup();
     render(<YourComponent />);
-    
+
     // Trigger user actions
-    await user.click(screen.getByRole('button'));
-    
+    await user.click(screen.getByRole("button"));
+
     // Assert the expected result
-    expect(screen.getByText('New Text')).toBeInTheDocument();
+    expect(screen.getByText("New Text")).toBeInTheDocument();
   });
 });
 ```
@@ -62,8 +63,8 @@ We use MSW (Mock Service Worker) to mock API requests:
 
 ```ts
 // In your test file
-import { beforeAll, afterAll, afterEach } from 'vitest';
-import { server } from '@/tests/mocks/server';
+import { beforeAll, afterAll, afterEach } from "vitest";
+import { server } from "@/tests/mocks/server";
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
@@ -93,17 +94,17 @@ E2E tests are located in `src/tests/e2e` directory.
 
 ```ts
 // Example E2E test
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('basic navigation flow', async ({ page }) => {
-  await page.goto('/');
-  
+test("basic navigation flow", async ({ page }) => {
+  await page.goto("/");
+
   // Check page content
-  await expect(page.getByRole('heading', { name: 'Welcome' })).toBeVisible();
-  
+  await expect(page.getByRole("heading", { name: "Welcome" })).toBeVisible();
+
   // Interact with the page
-  await page.getByRole('link', { name: 'Login' }).click();
-  
+  await page.getByRole("link", { name: "Login" }).click();
+
   // Assert navigation
   await expect(page).toHaveURL(/.*login/);
 });
@@ -117,31 +118,31 @@ For more complex tests, use the Page Object Model pattern:
 // src/tests/e2e/models/LoginPage.ts
 export class LoginPage {
   constructor(private page) {}
-  
+
   async navigate() {
-    await this.page.goto('/login');
+    await this.page.goto("/login");
   }
-  
+
   async login(email, password) {
-    await this.page.getByLabel('Email').fill(email);
-    await this.page.getByLabel('Password').fill(password);
-    await this.page.getByRole('button', { name: 'Login' }).click();
+    await this.page.getByLabel("Email").fill(email);
+    await this.page.getByLabel("Password").fill(password);
+    await this.page.getByRole("button", { name: "Login" }).click();
   }
 }
 
 // In your test
-import { LoginPage } from './models/LoginPage';
+import { LoginPage } from "./models/LoginPage";
 
-test('user can login', async ({ page }) => {
+test("user can login", async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.navigate();
-  await loginPage.login('user@example.com', 'password');
-  
+  await loginPage.login("user@example.com", "password");
+
   // Assert successful login
-  await expect(page).toHaveURL('/dashboard');
+  await expect(page).toHaveURL("/dashboard");
 });
 ```
 
 ## Continuous Integration
 
-Tests run automatically in GitHub Actions on pull requests and pushes to main branch. See `.github/workflows` for configuration details. 
+Tests run automatically in GitHub Actions on pull requests and pushes to main branch. See `.github/workflows` for configuration details.

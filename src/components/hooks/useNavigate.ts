@@ -12,4 +12,4 @@ export function useNavigate() {
       window.location.href = path;
     }
   };
-} 
+}

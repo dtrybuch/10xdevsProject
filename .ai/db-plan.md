@@ -3,6 +3,7 @@
 ## 1. Tabele i kolumny
 
 ### 1.1. Tabela `flashcards`
+
 - **id**: BIGSERIAL PRIMARY KEY
 - **user_id**: UUID NOT NULL
   - Odniesienie do użytkownika w Supabase Auth
@@ -18,6 +19,7 @@
 - **updated_at**: TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 
 ### 1.2. Tabela `generation_error_logs`
+
 - **id**: BIGSERIAL PRIMARY KEY
 - **user_id**: UUID NOT NULL
   - Odniesienie do użytkownika w Supabase Auth
@@ -29,6 +31,7 @@
 - **created_at**: TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 
 ### 1.3. Tabela `generation_sessions`
+
 - **id**: BIGSERIAL PRIMARY KEY
 - **user_id**: UUID NOT NULL
   - Odniesienie do użytkownika w Supabase Auth
@@ -42,7 +45,6 @@
 
 - Jeden użytkownik (z Supabase Auth) może posiadać wiele wpisów w tabeli `flashcards` (relacja 1:N przy użyciu `user_id`).
 - Jeden użytkownik może posiadać wiele logów w tabeli `generation_error_logs` oraz wiele sesji w tabeli `generation_sessions` (relacja 1:N przy użyciu `user_id`).
-
 
 ## 3. Indeksy
 

@@ -8,11 +8,7 @@ interface Props {
   class?: string;
 }
 
-const { 
-  title = "Authentication", 
-  description = "Sign in to your account",
-  class: className
-} = Astro.props;
+const { title = "Authentication", description = "Sign in to your account", class: className } = Astro.props;
 ---
 
 <Layout title={title}>
@@ -27,4 +23,4 @@ const {
       </div>
     </div>
   </main>
-</Layout> 
+</Layout>

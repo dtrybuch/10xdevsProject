@@ -10,32 +10,27 @@ export function LogoutButton() {
   const handleLogout = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
       });
 
       if (!response.ok) {
-        throw new Error('Failed to logout');
+        throw new Error("Failed to logout");
       }
 
       // Redirect to login page
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Button 
-      variant="ghost" 
-      size="sm" 
-      onClick={handleLogout}
-      disabled={isLoading}
-    >
+    <Button variant="ghost" size="sm" onClick={handleLogout} disabled={isLoading}>
       <LogOut className="h-4 w-4 mr-2" />
-      {isLoading ? 'Logging out...' : 'Logout'}
+      {isLoading ? "Logging out..." : "Logout"}
     </Button>
   );
-} 
+}

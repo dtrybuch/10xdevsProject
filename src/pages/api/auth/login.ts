@@ -1,13 +1,13 @@
-import type { APIRoute } from 'astro';
-import { createSupabaseServerInstance } from '../../../db/supabase.client';
-import { z } from 'zod';
+import type { APIRoute } from "astro";
+import { createSupabaseServerInstance } from "../../../db/supabase.client";
+import { z } from "zod";
 
 // Prevent static prerendering
 export const prerender = false;
 
 // Validation schema for login request
 const loginSchema = z.object({
-  email: z.string().email('Invalid email format'),
+  email: z.string().email("Invalid email format"),
   password: z.string(),
 });
 
@@ -25,38 +25,38 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
 
     if (error) {
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           error: error.message,
-          status: 'error',
+          status: "error",
         }),
         { status: 400 }
       );
     }
 
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         user: data.user,
-        status: 'success',
+        status: "success",
       }),
       { status: 200 }
     );
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           error: error.errors[0].message,
-          status: 'error',
+          status: "error",
         }),
         { status: 400 }
       );
     }
 
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         error: `An unexpected error occurred ${error}`,
-        status: 'error',
+        status: "error",
       }),
       { status: 500 }
     );
   }
-}; 
+};
