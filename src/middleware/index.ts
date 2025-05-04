@@ -1,5 +1,5 @@
 import "../polyfills";
-import { defineMiddleware, type MiddlewareResponseHandler } from "astro:middleware";
+import { defineMiddleware } from "astro:middleware";
 import { createSupabaseServerInstance } from "../db/supabase.client";
 
 // Public paths that don't require authentication
@@ -26,6 +26,14 @@ declare global {
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  // Add Cloudflare environment variables to the locals context first
+  context.locals.runtime = {
+    env: {
+      SUPABASE_URL: context.locals.runtime?.env?.SUPABASE_URL ?? import.meta.env.SUPABASE_URL,
+      SUPABASE_PUBLIC_KEY: context.locals.runtime?.env?.SUPABASE_PUBLIC_KEY ?? import.meta.env.SUPABASE_PUBLIC_KEY
+    }
+  };
+
   if (context.url.pathname.startsWith('/_astro')) {
     // Skip middleware for internal Astro requests
     return next();
@@ -39,6 +47,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const supabase = createSupabaseServerInstance({
     cookies: context.cookies,
     headers: context.request.headers,
+    locals: context.locals
   });
 
   // Get user session
@@ -56,14 +65,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
     // Redirect to login for protected routes
     return context.redirect("/login");
   }
-
-  // Add Cloudflare environment variables to the locals context
-  context.locals.runtime = {
-    env: {
-      SUPABASE_URL: context.locals.runtime?.env?.SUPABASE_URL ?? import.meta.env.SUPABASE_URL,
-      SUPABASE_PUBLIC_KEY: context.locals.runtime?.env?.SUPABASE_PUBLIC_KEY ?? import.meta.env.SUPABASE_PUBLIC_KEY
-    }
-  };
 
   return next();
 });

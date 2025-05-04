@@ -25,6 +25,11 @@ export default defineConfig({
               'react-dom/server': 'react-dom/server.edge',
             }
           : undefined,
+    },
+    // Define environment variables for client-side
+    define: {
+      'import.meta.env.SUPABASE_URL': JSON.stringify(process.env.SUPABASE_URL),
+      'import.meta.env.SUPABASE_PUBLIC_KEY': JSON.stringify(process.env.SUPABASE_PUBLIC_KEY),
     }
   },
   adapter: cloudflare(),
