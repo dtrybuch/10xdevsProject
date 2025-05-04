@@ -5,12 +5,6 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "build:cloudflare": "node scripts/cloudflare-build.js",
-    "build:cloudflare:fallback": "node scripts/cloudflare-fallback.js",
-    "deploy:cloudflare": "npm run build:cloudflare && npx wrangler deploy",
-    "deploy:cloudflare:fallback": "npm run build:cloudflare:fallback && npx wrangler deploy",
-    "deploy:pages": "npm run build:cloudflare:fallback && npx wrangler pages deploy dist",
-    "deploy:pages:direct": "node scripts/deploy-pages.js",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint .",
