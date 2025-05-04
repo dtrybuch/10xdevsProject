@@ -29,9 +29,14 @@ export class OpenRouterService {
 
   constructor(config: Partial<OpenRouterConfig> = {}) {
     try {
+      // Ensure API key is provided
+      if (!config.apiKey || config.apiKey.trim() === "") {
+        throw new OpenRouterValidationError("API key is required. Actual value: " + config.apiKey);
+      }
+
       // Merge provided config with defaults
       const fullConfig: OpenRouterConfig = {
-        apiKey: config.apiKey || "",
+        apiKey: config.apiKey,
         modelName: DEFAULT_CONFIG.modelName,
         modelParameters: DEFAULT_CONFIG.modelParameters,
         requestTimeout: DEFAULT_CONFIG.requestTimeout,
@@ -101,6 +106,11 @@ export class OpenRouterService {
 
   async #sendRequest(payload: ApiRequestPayload, retryCount = 0): Promise<ChatResponse> {
     try {
+      // Verify API key is available before making request
+      if (!this.#config.apiKey || this.#config.apiKey.trim() === "") {
+        throw new OpenRouterError("API key is required to make requests to OpenRouter API");
+      }
+      
       // Rate limiting
       const now = Date.now();
       const timeSinceLastRequest = now - this.#lastRequestTime;
