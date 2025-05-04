@@ -26,14 +26,6 @@ declare global {
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  // Add Cloudflare environment variables to the locals context first
-  context.locals.runtime = {
-    env: {
-      SUPABASE_URL: (context as any).cloudflare?.env?.SUPABASE_URL ?? import.meta.env.SUPABASE_URL,
-      SUPABASE_PUBLIC_KEY: (context as any).cloudflare?.env?.SUPABASE_PUBLIC_KEY ?? import.meta.env.SUPABASE_PUBLIC_KEY
-    }
-  };
-
   if (context.url.pathname.startsWith('/_astro')) {
     // Skip middleware for internal Astro requests
     return next();
@@ -47,9 +39,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const supabase = createSupabaseServerInstance({
     cookies: context.cookies,
     headers: context.request.headers,
-    locals: context.locals,
-    cloudflare: (context as any).cloudflare,
-    cf: (context as any).cf
+    locals: context.locals
   });
 
   // Get user session

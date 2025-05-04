@@ -16,39 +16,27 @@ function parseCookieHeader(cookieHeader: string): { name: string; value: string 
   });
 }
 
-type CloudflareRuntime = {
-  env: {
-    SUPABASE_URL: string;
-    SUPABASE_PUBLIC_KEY: string;
-  };
-};
-
 export const createSupabaseServerInstance = (context: { 
   headers: Headers; 
   cookies: AstroCookies; 
   locals?: App.Locals;
-  cf?: any;
-  cloudflare?: CloudflareRuntime;
 }) => {
-  // Try to get environment variables from different possible sources
-  const supabaseUrl = 
-    context.cloudflare?.env?.SUPABASE_URL ?? 
-    context.locals?.runtime?.env?.SUPABASE_URL ?? 
-    import.meta.env.SUPABASE_URL;
-    
-  const supabaseKey = 
-    context.cloudflare?.env?.SUPABASE_PUBLIC_KEY ?? 
-    context.locals?.runtime?.env?.SUPABASE_PUBLIC_KEY ?? 
-    import.meta.env.SUPABASE_PUBLIC_KEY;
+  // Get environment variables from runtime config
+  const supabaseUrl = process.env.SUPABASE_URL ?? import.meta.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_PUBLIC_KEY ?? import.meta.env.SUPABASE_PUBLIC_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
+    console.error('Environment context:', {
+      processEnvUrl: process.env.SUPABASE_URL ? 'defined' : 'undefined',
+      processEnvKey: process.env.SUPABASE_PUBLIC_KEY ? 'defined' : 'undefined',
+      importMetaUrl: import.meta.env.SUPABASE_URL ? 'defined' : 'undefined',
+      importMetaKey: import.meta.env.SUPABASE_PUBLIC_KEY ? 'defined' : 'undefined'
+    });
+
     throw new Error(
       `Missing Supabase environment variables. Found:
       SUPABASE_URL: ${supabaseUrl ? "defined" : "undefined"}
       SUPABASE_PUBLIC_KEY: ${supabaseKey ? "defined" : "undefined"}
-      Locals Available: ${context.locals ? "yes" : "no"}
-      Cloudflare Runtime: ${context.cloudflare ? "yes" : "no"}
-      CF: ${context.cf ? "yes" : "no"}
       Please check your environment variables configuration.`
     );
   }
