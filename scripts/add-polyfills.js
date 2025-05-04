@@ -1,12 +1,17 @@
 // @ts-check
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 /**
  * This script injects the MessageChannel polyfill into the Cloudflare entry file
  */
 async function main() {
   try {
+    // Get current file's directory
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    
     // Path to the server entry file in the build output
     const serverEntryPath = path.resolve(__dirname, '../dist/server/entry.mjs');
     
@@ -67,4 +72,4 @@ if (typeof globalThis.MessageChannel === 'undefined') {
   }
 }
 
-main(); 
+main();
