@@ -8,13 +8,13 @@ export class GenerationService {
   private readonly supabase: SupabaseClient<Database>;
 
   constructor(supabase: SupabaseClient<Database>) {
-    if (!import.meta.env.OPENROUTER_API_KEY) {
+    if (!process.env.OPENROUTER_API_KEY ||!import.meta.env.OPENROUTER_API_KEY) {
       throw new Error("OpenRouter API key is not configured. Please set OPENROUTER_API_KEY in your .env file.");
     }
 
     this.supabase = supabase;
     this.openRouterService = new OpenRouterService({
-      apiKey: import.meta.env.OPENROUTER_API_KEY,
+      apiKey: process.env.OPENROUTER_API_KEY ?? import.meta.env.OPENROUTER_API_KEY,
       modelName: "openai/gpt-4o-mini",
       modelParameters: {
         temperature: 0.7,
