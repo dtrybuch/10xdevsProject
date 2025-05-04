@@ -20,7 +20,6 @@ import {
 export class OpenRouterService {
   readonly #config: OpenRouterConfig;
   readonly #baseUrl: string;
-  #httpClient: typeof fetch;
   readonly #retryDelay = 1000;
   readonly #requestTimeout: number;
   readonly #rateLimitDelay: number;
@@ -45,7 +44,6 @@ export class OpenRouterService {
 
       this.#config = validatedConfig;
       this.#baseUrl = validatedConfig.baseUrl || "https://openrouter.ai/api/v1";
-      this.#httpClient = fetch;
       this.#requestTimeout = validatedConfig.requestTimeout || DEFAULT_CONFIG.requestTimeout;
       this.#rateLimitDelay = validatedConfig.rateLimitDelay || DEFAULT_CONFIG.rateLimitDelay;
       this.#maxRetries = validatedConfig.maxRetries || DEFAULT_CONFIG.maxRetries;
@@ -115,7 +113,8 @@ export class OpenRouterService {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.#requestTimeout);
 
-      const response = await this.#httpClient(`${this.#baseUrl}/chat/completions`, {
+      // Use fetch directly in Cloudflare Workers environment
+      const response = await fetch(`${this.#baseUrl}/chat/completions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
