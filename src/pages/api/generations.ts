@@ -3,7 +3,6 @@ import { z } from "zod";
 import type { GenerateFlashcardsCommand } from "../../types";
 import { createSupabaseServerInstance } from "../../db/supabase.client";
 import { GenerationService } from "../../services/generation.service";
-import { config } from "../../config/env";
 
 export const prerender = false;
 
