@@ -5,47 +5,72 @@ import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
 
 /**
- * This script builds for Cloudflare and patches the worker file
+ * This script handles building for Cloudflare with React 18 compatibility
  */
 async function main() {
   try {
-    // Run the Astro build
-    console.log('Building with Astro...');
-    execSync('astro build', { stdio: 'inherit' });
-    
-    // Get the current directory
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     const rootDir = path.resolve(__dirname, '..');
     
-    // Find the worker file
-    const workerFiles = [
-      path.resolve(rootDir, 'dist/_worker.js'),
-      path.resolve(rootDir, 'dist/server/entry.mjs'),
-      path.resolve(rootDir, 'dist/functions/[[path]].js')
-    ];
+    console.log('Preparing for Cloudflare build...');
     
-    let workerFile = null;
-    for (const file of workerFiles) {
-      if (fs.existsSync(file)) {
-        workerFile = file;
-        console.log(`Found worker file at: ${workerFile}`);
-        break;
-      }
+    // Temporarily modify package.json to use React 18
+    const packageJsonPath = path.resolve(rootDir, 'package.json');
+    const originalPackageJson = fs.readFileSync(packageJsonPath, 'utf8');
+    const packageJson = JSON.parse(originalPackageJson);
+    
+    // Store original React versions
+    const originalReact = packageJson.dependencies.react;
+    const originalReactDom = packageJson.dependencies['react-dom'];
+    
+    console.log(`Original React version: ${originalReact}`);
+    console.log(`Original React DOM version: ${originalReactDom}`);
+    
+    // Update to React 18
+    packageJson.dependencies.react = '18.2.0';
+    packageJson.dependencies['react-dom'] = '18.2.0';
+    
+    // Write modified package.json
+    fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+    
+    try {
+      // Install React 18 dependencies
+      console.log('Installing React 18 dependencies...');
+      execSync('npm install', { stdio: 'inherit' });
+      
+      // Build with Astro
+      console.log('Building with Astro...');
+      execSync('astro build', { stdio: 'inherit' });
+      
+      // Patch build output with MessageChannel polyfill
+      await patchBuildOutput(rootDir);
+    } finally {
+      // Restore original package.json
+      console.log('Restoring original React versions...');
+      packageJson.dependencies.react = originalReact;
+      packageJson.dependencies['react-dom'] = originalReactDom;
+      fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+      
+      // Reinstall original dependencies
+      console.log('Reinstalling original dependencies...');
+      execSync('npm install', { stdio: 'inherit' });
     }
     
-    if (!workerFile) {
-      console.error('Could not find worker file. Looking for other candidates...');
-      const distDir = path.resolve(rootDir, 'dist');
-      findPossibleWorkerFiles(distDir);
-      process.exit(1);
-    }
-    
-    // Read the worker file
-    const originalContent = fs.readFileSync(workerFile, 'utf8');
-    
-    // Define the polyfill
-    const polyfill = `
+    console.log('Cloudflare build completed successfully!');
+  } catch (error) {
+    console.error('Error during build process:', error);
+    process.exit(1);
+  }
+}
+
+/**
+ * Patch build output files with MessageChannel polyfill
+ * @param {string} rootDir - Root directory of the project
+ */
+async function patchBuildOutput(rootDir) {
+  // Define the polyfill code
+  const polyfill = `
 // MessageChannel polyfill for Cloudflare Workers
 if (typeof globalThis.MessageChannel === 'undefined') {
   class MessagePort {
@@ -79,46 +104,74 @@ if (typeof globalThis.MessageChannel === 'undefined') {
   globalThis.MessagePort = MessagePort;
 }
 `;
+
+  try {
+    const distDir = path.resolve(rootDir, 'dist');
     
-    // Write the patched worker file
-    const patchedContent = polyfill + originalContent;
-    fs.writeFileSync(workerFile, patchedContent);
+    // Find and patch the main worker file
+    const workerFiles = [
+      path.resolve(distDir, '_worker.js'),
+      path.resolve(distDir, 'server/entry.mjs'),
+      path.resolve(distDir, 'functions/[[path]].js')
+    ];
     
-    console.log(`Successfully patched ${workerFile} with MessageChannel polyfill.`);
+    let patchedMainWorker = false;
+    for (const file of workerFiles) {
+      if (fs.existsSync(file)) {
+        console.log(`Patching main worker file: ${file}`);
+        const content = fs.readFileSync(file, 'utf8');
+        fs.writeFileSync(file, polyfill + content);
+        patchedMainWorker = true;
+      }
+    }
+    
+    if (!patchedMainWorker) {
+      console.warn('Could not find main worker file to patch. Searching for alternatives...');
+      
+      // Find all possible JS files in dist
+      /** @type {string[]} */
+      const allJsFiles = [];
+      findAllJsFiles(distDir, allJsFiles);
+      
+      console.log(`Found ${allJsFiles.length} JavaScript files to check.`);
+      
+      // Look for files that might be entry points or contain React code
+      for (const file of allJsFiles) {
+        const content = fs.readFileSync(file, 'utf8');
+        if (content.includes('ReactDOM') || 
+            content.includes('react-dom') || 
+            file.includes('entry') || 
+            file.includes('worker')) {
+          console.log(`Patching possible React file: ${file}`);
+          fs.writeFileSync(file, polyfill + content);
+        }
+      }
+    }
+    
+    console.log('Build output patching completed.');
   } catch (error) {
-    console.error('Error during build process:', error);
-    process.exit(1);
+    console.error('Error patching build output:', error);
+    throw error;
   }
 }
 
 /**
- * Find possible worker files in a directory
+ * Find all JavaScript files in a directory
  * @param {string} dir - Directory to search
- * @param {number} depth - Current depth
- * @param {number} maxDepth - Maximum depth to search
+ * @param {string[]} results - Array to collect results
  */
-function findPossibleWorkerFiles(dir, depth = 0, maxDepth = 3) {
-  if (depth > maxDepth) return;
+function findAllJsFiles(dir, results) {
+  const files = fs.readdirSync(dir);
   
-  try {
-    const files = fs.readdirSync(dir);
-    for (const file of files) {
-      const filePath = path.join(dir, file);
-      const stats = fs.statSync(filePath);
-      
-      if (stats.isDirectory()) {
-        findPossibleWorkerFiles(filePath, depth + 1, maxDepth);
-      } else if (
-        file.endsWith('.js') || 
-        file.endsWith('.mjs') || 
-        file.includes('worker') || 
-        file.includes('entry')
-      ) {
-        console.log(`Possible worker file: ${filePath}`);
-      }
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+    
+    if (stat.isDirectory()) {
+      findAllJsFiles(filePath, results);
+    } else if (file.endsWith('.js') || file.endsWith('.mjs')) {
+      results.push(filePath);
     }
-  } catch (error) {
-    console.error(`Error reading directory ${dir}:`, error);
   }
 }
 

@@ -1,9 +1,17 @@
 name = "10xdevs-project"
-main = ".cloudflare/worker.js"
 compatibility_date = "2023-07-10"
 
 [build]
 command = "npm run build:cloudflare"
+
+[build.upload]
+format = "modules"
+dir = "dist"
+main = ".cloudflare/worker.js"
+
+[vars]
+NODE_VERSION = "18"
+ENABLE_VC_BUILD = "1"
 
 [[env.production]]
 name = "10xdevs-project" 
