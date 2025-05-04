@@ -8,7 +8,7 @@ export const prerender = false;
 // Validation schema for login request
 const loginSchema = z.object({
   email: z.string().email('Invalid email format'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string(),
 });
 
 export const POST: APIRoute = async ({ request, cookies, redirect }) => {
@@ -53,7 +53,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
 
     return new Response(
       JSON.stringify({ 
-        error: 'An unexpected error occurred',
+        error: `An unexpected error occurred ${error}`,
         status: 'error',
       }),
       { status: 500 }

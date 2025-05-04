@@ -6,11 +6,13 @@ import type { FlashcardProposalDTO } from "@/types";
 interface BulkSaveButtonProps {
   selectedProposals: FlashcardProposalDTO[];
   onBulkSaveComplete: () => void;
+  'data-test-id'?: string;
 }
 
 export function BulkSaveButton({ 
   selectedProposals, 
-  onBulkSaveComplete 
+  onBulkSaveComplete,
+  'data-test-id': testId
 }: BulkSaveButtonProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -63,6 +65,7 @@ export function BulkSaveButton({
         onClick={handleBulkSave}
         disabled={isSaving}
         size="lg"
+        data-test-id={testId}
       >
         {isSaving ? (
           <>

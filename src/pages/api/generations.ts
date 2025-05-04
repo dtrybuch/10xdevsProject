@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
-import type { GenerateFlashcardsCommand, GenerationCreateResponseDto } from '../../types';
-import { supabaseClient, DEFAULT_USER_ID } from '../../db/supabase.client';
+import type { GenerateFlashcardsCommand } from '../../types';
+import { createSupabaseServerInstance } from '../../db/supabase.client';
 import { GenerationService } from '../../services/generation.service';
 import { config } from '../../config/env';
 
@@ -14,12 +14,26 @@ const generateFlashcardsSchema = z.object({
     .max(10000, 'Text cannot exceed 10,000 characters')
 });
 
-// Initialize the generation service
-const generationService = new GenerationService();
-
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals, cookies }) => {
   try {
     const sessionStart = Date.now();
+
+    // Check if user is authenticated
+    if (!locals.user?.id) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Create Supabase client instance
+    const supabase = createSupabaseServerInstance({
+      cookies,
+      headers: request.headers
+    });
+
+    // Initialize the generation service with the Supabase client
+    const generationService = new GenerationService(supabase);
 
     // Extract and validate the request body
     const body = await request.json() as GenerateFlashcardsCommand;
@@ -39,14 +53,14 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Generate flashcards using the service
-    const result = await generationService.generateFlashcards(validationResult.data.text);
+    const result = await generationService.generateFlashcards(validationResult.data.text, locals.user.id);
 
     // Calculate session duration in seconds
     const sessionDuration = Math.round((Date.now() - sessionStart) / 1000);
     
     // Record the generation session with numeric duration
     await generationService.recordGenerationSession(
-      DEFAULT_USER_ID,
+      locals.user.id,
       sessionDuration
     );
 

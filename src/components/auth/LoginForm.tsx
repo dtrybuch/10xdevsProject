@@ -31,25 +31,45 @@ export default function LoginForm() {
     if (Object.keys(newErrors).length === 0) {
       setIsLoading(true);
       try {
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email, password }),
-        });
-
-        const data = await response.json();
+        console.log("Attempting to fetch /api/auth/login with:", { email });
+        
+        // Zabezpieczenie przed errorem fetch
+        let response;
+        try {
+          response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+          });
+          console.log("Login response status:", response.status);
+        } catch (fetchError: any) {
+          console.error("Fetch error during login:", fetchError);
+          throw new Error(`Network error: ${fetchError.message || 'Unknown fetch error'}`);
+        }
+        
+        let data;
+        try {
+          data = await response.json();
+          console.log("Login response data:", data);
+        } catch (jsonError: any) {
+          console.error("JSON parsing error:", jsonError);
+          throw new Error(`Error parsing response: ${jsonError.message || 'Unknown JSON parsing error'}`);
+        }
 
         if (!response.ok) {
-          setErrors({ form: data.error });
+          console.error("Login failed with error:", data.error);
+          setErrors({ form: data.error || "Login error occurred" });
           return;
         }
 
+        console.log("Login successful, navigating to /generate");
         // Redirect to generate page on success
         navigate('/generate');
-      } catch (error) {
-        setErrors({ form: 'An unexpected error occurred. Please try again.' });
+      } catch (error: any) {
+        console.error("Login error details:", error);
+        setErrors({ form: `An unexpected error occurred: ${error.message || 'Unknown error'}` });
       } finally {
         setIsLoading(false);
       }
@@ -57,7 +77,7 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4" data-test-id="login-form">
       <FormInput
         label="Email"
         type="email"
@@ -67,6 +87,7 @@ export default function LoginForm() {
         error={errors.email}
         autoComplete="email"
         disabled={isLoading}
+        data-test-id="email-input"
       />
       
       <FormInput
@@ -78,10 +99,11 @@ export default function LoginForm() {
         error={errors.password}
         autoComplete="current-password"
         disabled={isLoading}
+        data-test-id="password-input"
       />
 
       {errors.form && (
-        <div className="text-sm text-red-500 mt-2">
+        <div className="text-sm text-red-500 mt-2" data-test-id="login-error">
           {errors.form}
         </div>
       )}
@@ -99,6 +121,7 @@ export default function LoginForm() {
         className="w-full" 
         size="lg"
         disabled={isLoading}
+        data-test-id="login-button"
       >
         {isLoading ? (
           <div className="flex items-center">

@@ -8,6 +8,7 @@ interface FlashcardProposalListItemProps {
   onAccept: (proposal: FlashcardProposalDTO) => void;
   onReject: (proposal: FlashcardProposalDTO) => void;
   onEdit: (proposal: FlashcardProposalDTO) => void;
+  index: number;
 }
 
 export function FlashcardProposalListItem({
@@ -15,16 +16,17 @@ export function FlashcardProposalListItem({
   onAccept,
   onReject,
   onEdit,
+  index,
 }: FlashcardProposalListItemProps) {
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden" data-test-id={`flashcard-proposal-${index}`}>
       <CardHeader className="pb-4">
         <CardTitle className="text-lg font-semibold">Front</CardTitle>
-        <p className="mt-2 whitespace-pre-wrap">{proposal.front}</p>
+        <p className="mt-2 whitespace-pre-wrap" data-test-id="flashcard-front">{proposal.front}</p>
       </CardHeader>
       <CardContent className="pb-4">
         <CardTitle className="text-lg font-semibold mb-2">Back</CardTitle>
-        <p className="whitespace-pre-wrap">{proposal.back}</p>
+        <p className="whitespace-pre-wrap" data-test-id="flashcard-back">{proposal.back}</p>
       </CardContent>
       <CardFooter className="flex justify-between gap-4 pt-4 border-t">
         <Button
@@ -33,6 +35,7 @@ export function FlashcardProposalListItem({
           className="flex-1"
           onClick={() => onAccept(proposal)}
           disabled={proposal.status === 'accepted'}
+          data-test-id="accept-flashcard-button"
         >
           <Check className="w-4 h-4 mr-2" />
           {proposal.status === 'accepted' ? 'Accepted' : 'Accept'}
@@ -43,6 +46,7 @@ export function FlashcardProposalListItem({
           className="flex-1"
           onClick={() => onEdit(proposal)}
           disabled={proposal.status === 'accepted'}
+          data-test-id="edit-flashcard-button"
         >
           <Edit className="w-4 h-4 mr-2" />
           Edit
@@ -53,6 +57,7 @@ export function FlashcardProposalListItem({
           className="flex-1"
           onClick={() => onReject(proposal)}
           disabled={proposal.status === 'accepted'}
+          data-test-id="reject-flashcard-button"
         >
           <X className="w-4 h-4 mr-2" />
           Reject

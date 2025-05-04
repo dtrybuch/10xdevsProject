@@ -1,15 +1,18 @@
 import type { FlashcardProposalDTO, GenerationCreateResponseDto } from '../types';
-import { supabaseClient, DEFAULT_USER_ID } from '../db/supabase.client';
+import { type SupabaseClient } from '@supabase/supabase-js';
 import { OpenRouterService } from '../lib/openrouter.service';
+import type { Database } from '../db/database.types';
 
 export class GenerationService {
   private readonly openRouterService: OpenRouterService;
+  private readonly supabase: SupabaseClient<Database>;
 
-  constructor() {
+  constructor(supabase: SupabaseClient<Database>) {
     if (!import.meta.env.OPENROUTER_API_KEY) {
       throw new Error('OpenRouter API key is not configured. Please set OPENROUTER_API_KEY in your .env file.');
     }
 
+    this.supabase = supabase;
     this.openRouterService = new OpenRouterService({
       apiKey: import.meta.env.OPENROUTER_API_KEY,
       modelName: 'openai/gpt-4o-mini',
@@ -26,10 +29,11 @@ export class GenerationService {
   /**
    * Generates flashcard proposals from the provided text using AI service
    * @param text - The input text to generate flashcards from (max 10,000 chars)
+   * @param userId - The ID of the user generating the flashcards
    * @returns Promise with the generation response containing flashcard proposals
    * @throws Error if the AI service request fails
    */
-  async generateFlashcards(text: string): Promise<GenerationCreateResponseDto> {
+  async generateFlashcards(text: string, userId: string): Promise<GenerationCreateResponseDto> {
     try {
       const systemPrompt = `You are a flashcard generation assistant. Your task is to create educational flashcards from the provided text.
 Each flashcard should have a question on the front and an answer on the back. Follow these rules:
@@ -65,10 +69,10 @@ You MUST respond with a JSON object in this exact format:
       const generation_id = Date.now();
 
       // Create initial session record
-      const { error: insertError } = await supabaseClient
+      const { error: insertError } = await this.supabase
         .from('generation_sessions')
         .insert({
-          user_id: DEFAULT_USER_ID,
+          user_id: userId,
           session_duration: 'PT0S',  // Initial duration as ISO 8601
           accepted_count: 0,
           edited_count: 0,
@@ -107,7 +111,7 @@ You MUST respond with a JSON object in this exact format:
       // Convert seconds to ISO 8601 duration format
       const duration = `PT${sessionDuration}S`;
       
-      const { error: updateError } = await supabaseClient
+      const { error: updateError } = await this.supabase
         .from('generation_sessions')
         .update({
           session_duration: duration,

@@ -5,14 +5,16 @@ interface GenerateButtonProps {
   onClick: () => void;
   disabled: boolean;
   isLoading: boolean;
+  'data-test-id'?: string;
 }
 
-export function GenerateButton({ onClick, disabled, isLoading }: GenerateButtonProps) {
+export function GenerateButton({ onClick, disabled, isLoading, 'data-test-id': testId }: GenerateButtonProps) {
   return (
     <Button
       onClick={onClick}
       disabled={disabled || isLoading}
       className="w-full"
+      data-test-id={testId}
     >
       {isLoading ? (
         <>

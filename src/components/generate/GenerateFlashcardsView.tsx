@@ -109,23 +109,30 @@ export function GenerateFlashcardsView() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-test-id="flashcards-generator-view">
       <TextInputArea
         value={state.inputText}
         onChange={handleTextChange}
         errorMessage={state.error}
+        data-test-id="input-text-area"
       />
       
       <GenerateButton
         onClick={handleGenerate}
         disabled={!!state.error || state.inputText.length < 1000 || state.isLoading}
+        isLoading={state.isLoading}
+        data-test-id="generate-flashcards-button"
       />
 
       {state.error && (
-        <AlertMessage message={state.error} type="error" />
+        <AlertMessage 
+          message={state.error} 
+          type="error" 
+          data-test-id="error-message"
+        />
       )}
 
-      {state.isLoading && <SkeletonLoader />}
+      {state.isLoading && <SkeletonLoader data-test-id="loading-indicator" />}
 
       {state.proposals.length > 0 && (
         <>
@@ -146,12 +153,14 @@ export function GenerateFlashcardsView() {
                 proposals: prev.proposals.filter(p => p !== proposal),
               }));
             }}
+            data-test-id="flashcard-proposal-list"
           />
           <BulkSaveButton
             selectedProposals={state.proposals}
             onBulkSaveComplete={() => {
               setState(prev => ({ ...prev, proposals: [] }));
             }}
+            data-test-id="save-flashcards-button"
           />
         </>
       )}

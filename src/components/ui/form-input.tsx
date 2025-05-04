@@ -4,10 +4,11 @@ import { cn } from "@/lib/utils";
 export interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  "data-test-id"?: string;
 }
 
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
-  ({ className, label, error, type = "text", ...props }, ref) => {
+  ({ className, label, error, type = "text", "data-test-id": testId, ...props }, ref) => {
     return (
       <div className="space-y-2">
         {label && (
@@ -17,6 +18,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
         )}
         <input
           type={type}
+          data-test-id={testId}
           className={cn(
             "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background",
             "file:border-0 file:bg-transparent file:text-sm file:font-medium",

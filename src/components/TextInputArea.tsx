@@ -4,9 +4,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 interface TextInputAreaProps {
   value: string;
   onChange: (value: string) => void;
+  'data-test-id'?: string;
 }
 
-export function TextInputArea({ value, onChange }: TextInputAreaProps) {
+export function TextInputArea({ value, onChange, 'data-test-id': testId }: TextInputAreaProps) {
   const charCount = value.length;
   const isValid = charCount >= 1000 && charCount <= 10000;
   const remainingChars = 10000 - charCount;
@@ -18,6 +19,7 @@ export function TextInputArea({ value, onChange }: TextInputAreaProps) {
         onChange={(e) => onChange(e.target.value)}
         placeholder="Enter your text here (1,000 - 10,000 characters)"
         className="min-h-[200px]"
+        data-test-id={testId}
       />
       <div className="flex justify-between text-sm text-muted-foreground">
         <span>{charCount} characters</span>

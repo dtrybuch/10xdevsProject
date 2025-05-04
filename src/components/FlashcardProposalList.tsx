@@ -82,6 +82,7 @@ export function FlashcardProposalList({
       {localProposals.map((proposal, index) => (
         <FlashcardProposalListItem
           key={index}
+          index={index}
           proposal={proposal}
           onAccept={handleAccept}
           onReject={handleReject}

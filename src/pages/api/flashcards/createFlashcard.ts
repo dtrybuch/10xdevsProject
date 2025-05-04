@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { z } from 'zod';
 import type { CreateFlashcardCommand } from '../../../types';
 import { createFlashcard } from '../../../lib/services/flashcard.service';
-import { supabaseClient, DEFAULT_USER_ID } from '../../../db/supabase.client';
+import { createSupabaseServerInstance } from '../../../db/supabase.client';
 
 // Prevent static prerendering as this is a dynamic API route
 export const prerender = false;
@@ -17,7 +17,7 @@ const createFlashcardSchema = z.object({
   knowledge_status: z.string().optional()
 });
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals, cookies }) => {
   try {
     // Parse and validate request body
     const body = await request.json();
@@ -33,10 +33,24 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
+    // Get user ID from auth context
+    if (!locals.user?.id) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Create Supabase client
+    const supabase = createSupabaseServerInstance({
+      cookies,
+      headers: request.headers,
+    });
+
     // Create flashcard using the service
     const flashcard = await createFlashcard(
-      supabaseClient,
-      DEFAULT_USER_ID,
+      supabase,
+      locals.user.id,
       validationResult.data
     );
 

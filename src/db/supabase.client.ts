@@ -22,7 +22,7 @@ export const createSupabaseServerInstance = (context: {
 }) => {
   const supabase = createServerClient<Database>(
     import.meta.env.SUPABASE_URL,
-    import.meta.env.SUPABASE_KEY,
+    import.meta.env.SUPABASE_PUBLIC_KEY,
     {
       cookieOptions,
       cookies: {

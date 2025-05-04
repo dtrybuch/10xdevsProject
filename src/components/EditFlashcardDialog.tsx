@@ -57,18 +57,19 @@ export function EditFlashcardDialog({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={() => onClose()}>
       <DialogPortal>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent data-test-id="edit-flashcard-dialog" className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Edit Flashcard</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">
+              <label htmlFor="front" className="text-sm font-medium">
                 Front Side <span className="text-muted-foreground">({front.length}/200)</span>
               </label>
               <Textarea
+                id="front"
                 value={front}
                 onChange={(e) => {
                   setFront(e.target.value);
@@ -76,13 +77,15 @@ export function EditFlashcardDialog({
                 }}
                 placeholder="Enter front side text"
                 className="min-h-[100px]"
+                data-test-id="edit-front-textarea"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">
+              <label htmlFor="back" className="text-sm font-medium">
                 Back Side <span className="text-muted-foreground">({back.length}/500)</span>
               </label>
               <Textarea
+                id="back"
                 value={back}
                 onChange={(e) => {
                   setBack(e.target.value);
@@ -90,19 +93,22 @@ export function EditFlashcardDialog({
                 }}
                 placeholder="Enter back side text"
                 className="min-h-[150px]"
+                data-test-id="edit-back-textarea"
               />
             </div>
             {error && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" data-test-id="edit-error-alert">
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={onClose}>
+            <Button variant="outline" onClick={onClose} data-test-id="edit-cancel-button">
               Cancel
             </Button>
-            <Button onClick={handleSave}>Save Changes</Button>
+            <Button onClick={handleSave} data-test-id="edit-save-button">
+              Save Changes
+            </Button>
           </DialogFooter>
         </DialogContent>
       </DialogPortal>

@@ -1,10 +1,14 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function SkeletonLoader() {
+interface SkeletonLoaderProps {
+  'data-test-id'?: string;
+}
+
+export function SkeletonLoader({ 'data-test-id': testId }: SkeletonLoaderProps) {
   // Show 3 skeleton cards to represent loading state
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-test-id={testId}>
       {[1, 2, 3].map((index) => (
         <Card key={index}>
           <CardHeader>
