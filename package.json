@@ -4,7 +4,8 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/add-polyfills.js",
+    "build": "astro build",
+    "build:cloudflare": "node scripts/cloudflare-build.js",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint .",

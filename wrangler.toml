@@ -1,0 +1,9 @@
+name = "10xdevs-project"
+main = ".cloudflare/worker.js"
+compatibility_date = "2023-07-10"
+
+[build]
+command = "npm run build:cloudflare"
+
+[[env.production]]
+name = "10xdevs-project" 

@@ -12,11 +12,41 @@ async function main() {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     
-    // Path to the server entry file in the build output
-    const serverEntryPath = path.resolve(__dirname, '../dist/server/entry.mjs');
+    // Possible paths for the server entry file
+    const possiblePaths = [
+      path.resolve(__dirname, '../dist/server/entry.mjs'),
+      path.resolve(__dirname, '../.astro/entry.mjs'),
+      path.resolve(__dirname, '../dist/_worker.js'),
+      path.resolve(__dirname, '../dist/functions/[[path]].js'),
+      path.resolve(__dirname, '../dist/functions/index.js'),
+      path.resolve(process.cwd(), 'dist/server/entry.mjs'),
+      path.resolve(process.cwd(), '.astro/entry.mjs'),
+      path.resolve(process.cwd(), 'dist/_worker.js')
+    ];
     
-    if (!fs.existsSync(serverEntryPath)) {
-      console.error('Server entry file not found at:', serverEntryPath);
+    let serverEntryPath = null;
+    for (const possiblePath of possiblePaths) {
+      if (fs.existsSync(possiblePath)) {
+        serverEntryPath = possiblePath;
+        console.log(`Found server entry file at: ${serverEntryPath}`);
+        break;
+      }
+    }
+    
+    if (!serverEntryPath) {
+      console.error('Server entry file not found in any of the expected locations.');
+      console.log('Searched paths:');
+      possiblePaths.forEach(p => console.log(` - ${p}`));
+      
+      // Instead of exiting, try to find files that might be the entry point
+      console.log('\nSearching for possible entry files in dist directory...');
+      const distDir = path.resolve(process.cwd(), 'dist');
+      if (fs.existsSync(distDir)) {
+        findEntryFiles(distDir);
+      } else {
+        console.log('dist directory not found');
+      }
+      
       process.exit(1);
     }
     
@@ -69,6 +99,37 @@ if (typeof globalThis.MessageChannel === 'undefined') {
   } catch (error) {
     console.error('Error injecting polyfill:', error);
     process.exit(1);
+  }
+}
+
+/**
+ * Helper function to find possible entry files
+ * @param {string} dir - Directory to search in
+ * @param {number} depth - Current depth in the directory tree
+ * @param {number} maxDepth - Maximum depth to search
+ */
+function findEntryFiles(dir, depth = 0, maxDepth = 3) {
+  if (depth > maxDepth) return;
+  
+  try {
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+      const filePath = path.join(dir, file);
+      const stats = fs.statSync(filePath);
+      
+      if (stats.isDirectory()) {
+        findEntryFiles(filePath, depth + 1, maxDepth);
+      } else if (
+        file.endsWith('.js') || 
+        file.endsWith('.mjs') || 
+        file.includes('worker') || 
+        file.includes('entry')
+      ) {
+        console.log(`Possible entry file: ${filePath}`);
+      }
+    }
+  } catch (error) {
+    console.error(`Error reading directory ${dir}:`, error);
   }
 }
 
