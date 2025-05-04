@@ -29,8 +29,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // Add Cloudflare environment variables to the locals context first
   context.locals.runtime = {
     env: {
-      SUPABASE_URL: context.locals.runtime?.env?.SUPABASE_URL ?? import.meta.env.SUPABASE_URL,
-      SUPABASE_PUBLIC_KEY: context.locals.runtime?.env?.SUPABASE_PUBLIC_KEY ?? import.meta.env.SUPABASE_PUBLIC_KEY
+      SUPABASE_URL: (context as any).cloudflare?.env?.SUPABASE_URL ?? import.meta.env.SUPABASE_URL,
+      SUPABASE_PUBLIC_KEY: (context as any).cloudflare?.env?.SUPABASE_PUBLIC_KEY ?? import.meta.env.SUPABASE_PUBLIC_KEY
     }
   };
 
@@ -47,7 +47,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const supabase = createSupabaseServerInstance({
     cookies: context.cookies,
     headers: context.request.headers,
-    locals: context.locals
+    locals: context.locals,
+    cloudflare: (context as any).cloudflare,
+    cf: (context as any).cf
   });
 
   // Get user session
