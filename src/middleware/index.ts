@@ -1,3 +1,4 @@
+import "../polyfills";
 import { defineMiddleware } from "astro:middleware";
 import { createSupabaseServerInstance } from "../db/supabase.client";
 
@@ -29,7 +30,7 @@ export const onRequest = defineMiddleware(async ({ locals, cookies, url, request
 
   if (user) {
     locals.user = {
-      email: user.email,
+      email: user.email ?? null,
       id: user.id,
     };
     locals.supabase = supabase;
