@@ -1,8 +1,9 @@
 import type { CreateFlashcardCommand, FlashcardDTO } from "../../types";
-import { supabaseClient } from "../../db/supabase.client";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "../../db/database.types";
 
 export async function createFlashcard(
-  supabase = supabaseClient,
+  supabase: SupabaseClient<Database>,
   userId: string,
   command: CreateFlashcardCommand
 ): Promise<FlashcardDTO> {
