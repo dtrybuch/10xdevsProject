@@ -16,9 +16,9 @@ function parseCookieHeader(cookieHeader: string): { name: string; value: string 
   });
 }
 
-export const createSupabaseServerInstance = (context: { headers: Headers; cookies: AstroCookies; platform?: any }) => {
-  // Access environment variables through Cloudflare's platform context
-  const env = context.platform?.env ?? import.meta.env;
+export const createSupabaseServerInstance = (context: { headers: Headers; cookies: AstroCookies; locals?: App.Locals }) => {
+  // Access environment variables through locals context first, then fallback to import.meta.env
+  const env = context.locals?.runtime?.env ?? import.meta.env;
   
   const supabaseUrl = env.SUPABASE_URL;
   const supabaseKey = env.SUPABASE_PUBLIC_KEY;
@@ -28,7 +28,7 @@ export const createSupabaseServerInstance = (context: { headers: Headers; cookie
       `Missing Supabase environment variables. Found:
       SUPABASE_URL: ${supabaseUrl ? "defined" : "undefined"}
       SUPABASE_PUBLIC_KEY: ${supabaseKey ? "defined" : "undefined"}
-      Platform: ${context.platform ? "available" : "not available"}
+      Locals Available: ${context.locals ? "yes" : "no"}
       Please check your environment variables configuration.`
     );
   }
