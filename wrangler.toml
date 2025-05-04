@@ -2,16 +2,7 @@ name = "10xdevs-project"
 compatibility_date = "2023-07-10"
 
 [build]
-command = "npm run build:cloudflare"
-
-[build.upload]
-format = "modules"
-dir = "dist"
-main = ".cloudflare/worker.js"
+command = "npm run build:cloudflare:fallback"
 
 [vars]
-NODE_VERSION = "18"
-ENABLE_VC_BUILD = "1"
-
-[[env.production]]
-name = "10xdevs-project" 
+NODE_VERSION = "18" 
