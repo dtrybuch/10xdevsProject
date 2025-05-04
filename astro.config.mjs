@@ -4,8 +4,6 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
-import node from "@astrojs/node";
-
 import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
@@ -27,11 +25,6 @@ export default defineConfig({
               'react-dom/server': 'react-dom/server.edge',
             }
           : undefined,
-    },
-    // Ensure environment variables are available
-    define: {
-      'import.meta.env.SUPABASE_URL': JSON.stringify(process.env.SUPABASE_URL),
-      'import.meta.env.SUPABASE_PUBLIC_KEY': JSON.stringify(process.env.SUPABASE_PUBLIC_KEY),
     }
   },
   adapter: cloudflare(),

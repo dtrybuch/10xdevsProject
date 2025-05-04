@@ -16,15 +16,19 @@ function parseCookieHeader(cookieHeader: string): { name: string; value: string 
   });
 }
 
-export const createSupabaseServerInstance = (context: { headers: Headers; cookies: AstroCookies }) => {
-  const supabaseUrl = import.meta.env.SUPABASE_URL;
-  const supabaseKey = import.meta.env.SUPABASE_PUBLIC_KEY;
+export const createSupabaseServerInstance = (context: { headers: Headers; cookies: AstroCookies; platform?: any }) => {
+  // Access environment variables through Cloudflare's platform context
+  const env = context.platform?.env ?? import.meta.env;
+  
+  const supabaseUrl = env.SUPABASE_URL;
+  const supabaseKey = env.SUPABASE_PUBLIC_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     throw new Error(
       `Missing Supabase environment variables. Found:
       SUPABASE_URL: ${supabaseUrl ? "defined" : "undefined"}
       SUPABASE_PUBLIC_KEY: ${supabaseKey ? "defined" : "undefined"}
+      Platform: ${context.platform ? "available" : "not available"}
       Please check your environment variables configuration.`
     );
   }
