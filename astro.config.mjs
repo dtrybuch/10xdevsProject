@@ -15,6 +15,12 @@ export default defineConfig({
   server: { port: 3000 },
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: [],
+    },
+    ssr: {
+      noExternal: ["react", "react-dom"]
+    }
   },
   adapter: cloudflare(),
   experimental: {
