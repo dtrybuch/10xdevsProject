@@ -1,0 +1,19 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import FlashcardsList from "../components/flashcards/FlashcardsList";
+
+// Check if user is authenticated
+if (!Astro.locals.user) {
+  return Astro.redirect("/login");
+}
+---
+
+<MainLayout title="Moje fiszki | Fiszki AI">
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">Moje fiszki</h1>
+    </div>
+    
+    <FlashcardsList client:load />
+  </div>
+</MainLayout> 

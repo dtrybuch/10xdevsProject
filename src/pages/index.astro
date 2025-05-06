@@ -1,8 +1,8 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
+// Przekierowanie użytkownika w zależności od statusu uwierzytelnienia
+if (Astro.locals.user) {
+  return Astro.redirect("/generate");
+} else {
+  return Astro.redirect("/login");
+}
 ---
-
-<Layout>
-  <Welcome />
-</Layout>

@@ -10,13 +10,40 @@ interface Props {
 
 const { title, class: className } = Astro.props;
 const { user } = Astro.locals;
+const pathname = Astro.url.pathname;
 ---
 
 <Layout title={title}>
   <div class="min-h-screen flex flex-col">
     <header class="border-b">
       <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <a href="/generate" class="text-xl font-semibold"> Fiszki AI </a>
+        <div class="flex items-center gap-6">
+          <a href="/generate" class="text-xl font-semibold"> Fiszki AI </a>
+          
+          {user && (
+            <nav class="hidden md:flex items-center space-x-4">
+              <a 
+                href="/generate" 
+                class={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  pathname === "/generate" ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                Generuj fiszki
+              </a>
+              <a 
+                href="/flashcards" 
+                class={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  pathname === "/flashcards" ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                Moje fiszki
+              </a>
+            </nav>
+          )}
+        </div>
+        
         <div class="flex items-center gap-4">
           {
             user && (

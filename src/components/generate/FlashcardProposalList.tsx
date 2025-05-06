@@ -22,6 +22,19 @@ export function FlashcardProposalList({
 }: FlashcardProposalListProps) {
   const [editingProposal, setEditingProposal] = useState<FlashcardProposalDTO | null>(null);
 
+  const handleEditClick = (proposal: FlashcardProposalDTO) => {
+    setEditingProposal(proposal);
+  };
+
+  const handleEditDialogClose = () => {
+    setEditingProposal(null);
+  };
+
+  const handleSaveEdit = (editedProposal: FlashcardProposalDTO) => {
+    onEdit(editedProposal);
+    setEditingProposal(null);
+  };
+
   if (proposals.length === 0) {
     return null;
   }
@@ -62,7 +75,7 @@ export function FlashcardProposalList({
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setEditingProposal(proposal)}
+                    onClick={() => handleEditClick(proposal)}
                     data-test-id="edit-flashcard-button"
                   >
                     <Edit2 className="h-4 w-4 mr-1" />
@@ -86,12 +99,9 @@ export function FlashcardProposalList({
 
       {editingProposal && (
         <EditFlashcardDialog
-          isOpen={true}
-          onClose={() => setEditingProposal(null)}
-          onSave={(editedProposal) => {
-            onEdit(editedProposal);
-            setEditingProposal(null);
-          }}
+          isOpen={!!editingProposal}
+          onClose={handleEditDialogClose}
+          onSave={handleSaveEdit}
           proposal={editingProposal}
         />
       )}
