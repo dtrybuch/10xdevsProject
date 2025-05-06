@@ -1,6 +1,5 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
-import type { CreateFlashcardCommand } from "../../../types";
 import { createFlashcard } from "../../../lib/services/flashcard.service";
 import { createSupabaseServerInstance } from "../../../db/supabase.client";
 

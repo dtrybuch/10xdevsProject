@@ -49,6 +49,42 @@ function useFlashcards(initialPage = 1, initialPageSize = 10) {
     }
   };
 
+  // Funkcja do aktualizacji fiszki
+  const updateFlashcard = async (updatedFlashcard: FlashcardDTO) => {
+    try {
+      const response = await fetch(`/api/flashcards/updateFlashcard`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: updatedFlashcard.id,
+          front: updatedFlashcard.front,
+          back: updatedFlashcard.back,
+          type: updatedFlashcard.type,
+          knowledge_status: updatedFlashcard.knowledge_status,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Nie udało się zaktualizować fiszki');
+      }
+
+      // Odświeżenie listy po aktualizacji
+      if (result.success) {
+        await fetchFlashcards();
+        return true;
+      }
+      
+      return false;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Nieznany błąd podczas aktualizacji');
+      return false;
+    }
+  };
+
   // Funkcja do usuwania fiszki
   const deleteFlashcard = async (id: number) => {
     try {
@@ -82,6 +118,7 @@ function useFlashcards(initialPage = 1, initialPageSize = 10) {
     error,
     handlePageChange,
     handlePageSizeChange,
+    updateFlashcard,
     deleteFlashcard,
     refreshFlashcards: fetchFlashcards
   };

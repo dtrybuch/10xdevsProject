@@ -26,8 +26,8 @@ Interfejs użytkownika składa się z kilku głównych widoków, które odpowiad
 
    - Ścieżka widoku: `/flashcards`
    - Główny cel: Prezentacja wszystkich fiszek użytkownika wraz z możliwością edycji, usuwania i zatwierdzania fiszek.
-   - Kluczowe informacje: Lista fiszek z danymi (przód, tył, status), opcje zaznaczania fiszek do zatwierdzenia zbiorczego, przyciski edycji i usuwania.
-   - Kluczowe komponenty widoku: Tabela lub siatka z fiszkami, modal dialog do edycji/usuwania, checkboxy, przyciski akcji (np. "Zatwierdź zaznaczone").
+   - Kluczowe informacje: Lista fiszek z danymi (przód, tył, status), przyciski edycji i usuwania.
+   - Kluczowe komponenty widoku: Tabela lub siatka z fiszkami, modal dialog do edycji/usuwania.
    - UX, dostępność i względy bezpieczeństwa: Intuicyjna nawigacja w liście, potwierdzenia przed usunięciem, czytelny układ i responsywność, mechanizmy zabezpieczające przed przypadkową akcją.
 
 4. **Dashboard**

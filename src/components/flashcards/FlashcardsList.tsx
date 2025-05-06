@@ -27,6 +27,7 @@ export default function FlashcardsList({
     error,
     handlePageChange,
     handlePageSizeChange,
+    updateFlashcard,
     deleteFlashcard,
     refreshFlashcards
   } = useFlashcards(initialPage, initialPageSize);
@@ -60,33 +61,9 @@ export default function FlashcardsList({
   };
 
   const handleSaveEdit = async (updatedFlashcard: FlashcardDTO) => {
-    try {
-      const response = await fetch(`/api/flashcards/updateFlashcard`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: updatedFlashcard.id,
-          front: updatedFlashcard.front,
-          back: updatedFlashcard.back,
-          type: updatedFlashcard.type,
-          knowledge_status: updatedFlashcard.knowledge_status,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Nie udało się zaktualizować fiszki');
-      }
-
-      if (result.success) {
-        refreshFlashcards();
-        setFlashcardToEdit(null);
-      }
-    } catch (err) {
-      console.error('Error updating flashcard:', err);
+    const success = await updateFlashcard(updatedFlashcard);
+    if (success) {
+      setFlashcardToEdit(null);
     }
   };
 
